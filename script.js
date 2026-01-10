@@ -102,11 +102,12 @@ function renderSelectionMode() {
     defaultExercises.forEach((ex, index) => {
         const item = document.createElement('div');
         item.className = 'exercise-item';
+        item.onclick = () => selectExercise(ex); // Move click to container
 
         const nameSpan = document.createElement('span');
         nameSpan.textContent = ex.name;
         nameSpan.style.flex = '1';
-        nameSpan.onclick = () => selectExercise(ex);
+        // Removed onclick from here
 
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'delete-btn';
