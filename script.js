@@ -163,8 +163,7 @@ function renderActiveEffortMode() {
             if (val >= 0) updateState('currentReps', val);
         },
         1,
-        `<span style="color:var(--text-primary)">${state.currentReps}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetRepsSession}</span>`,
-        () => showInputModal('Reps', state.currentReps, (val) => updateState('currentReps', val))
+        `<span style="color:var(--text-primary)">${state.currentReps}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetRepsSession}</span>`
     );
 
     // Weight Control: Displays "Current / Target"
@@ -175,8 +174,7 @@ function renderActiveEffortMode() {
             if (val >= 0) updateState('currentWeight', val);
         },
         1,
-        `<span style="color:var(--text-primary)">${state.currentWeight}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetWeightSession}</span>`,
-        () => showInputModal('Weight', state.currentWeight, (val) => updateState('currentWeight', val))
+        `<span style="color:var(--text-primary)">${state.currentWeight}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetWeightSession}</span>`
     );
 
     controlsRow.appendChild(repsControl);
@@ -450,40 +448,7 @@ function showEndSessionModal() {
     };
 }
 
-function showInputModal(title, initialValue, onConfirm) {
-    const overlay = showModalUI(`
-        <div class="modal-card">
-            <div class="modal-title">Edit ${title}</div>
-            <input type="number" class="modal-input" value="${initialValue}" id="edit-val-input" style="text-align:center; font-size: 24px; font-weight: bold;">
-            <div class="modal-actions">
-                <button class="modal-btn modal-btn-cancel" id="modal-cancel">Cancel</button>
-                <button class="modal-btn modal-btn-confirm" id="modal-save">Ok</button>
-            </div>
-        </div>
-    `);
-
-    const input = overlay.querySelector('#edit-val-input');
-    input.focus();
-    input.select();
-
-    // Allow 'Enter' key to submit
-    input.onkeydown = (e) => {
-        if (e.key === 'Enter') {
-            overlay.querySelector('#modal-save').click();
-        }
-    };
-
-    overlay.querySelector('#modal-cancel').onclick = closeActiveModal;
-    overlay.querySelector('#modal-save').onclick = () => {
-        const val = Number(input.value);
-        if (val >= 0) {
-            onConfirm(val);
-            closeActiveModal();
-        }
-    };
-}
-
-function createStepperControl(label, value, onUpdate, step = 1, displayValue = null, onLabelClick = null) {
+function createStepperControl(label, value, onUpdate, step = 1, displayValue = null) {
     const div = document.createElement('div');
     div.className = 'control-group';
 
@@ -499,12 +464,46 @@ function createStepperControl(label, value, onUpdate, step = 1, displayValue = n
     div.querySelector('.minus').onclick = () => onUpdate(Number(value) - step);
     div.querySelector('.plus').onclick = () => onUpdate(Number(value) + step);
 
-    if (onLabelClick) {
-        const display = div.querySelector('.input-display');
-        display.style.cursor = 'pointer';
-        display.onclick = onLabelClick;
-        display.title = "Click to edit manually";
-    }
+    // Inline edit logic
+    const displayContainer = div.querySelector('.input-display');
+    displayContainer.style.cursor = 'pointer';
+    displayContainer.onclick = () => {
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.value = value;
+
+        // Inline styles to match the display
+        input.style.width = '100%';
+        input.style.maxWidth = '80px';
+        input.style.textAlign = 'center';
+        input.style.fontSize = '20px';
+        input.style.fontWeight = '600';
+        input.style.border = 'none';
+        input.style.background = 'transparent';
+        input.style.color = 'var(--text-primary)';
+        input.style.outline = 'none';
+        input.style.padding = '0';
+        input.style.fontFamily = 'inherit';
+
+        displayContainer.innerHTML = '';
+        displayContainer.appendChild(input);
+        input.focus();
+        input.select();
+
+        const finish = () => {
+            let val = parseFloat(input.value);
+            if (!isNaN(val) && val >= 0) {
+                onUpdate(val);
+            } else {
+                onUpdate(value);
+            }
+        };
+
+        input.onblur = finish;
+        input.onkeydown = (e) => {
+            if (e.key === 'Enter') input.blur();
+        };
+    };
 
     return div;
 }
