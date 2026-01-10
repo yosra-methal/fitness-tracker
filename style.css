@@ -435,3 +435,60 @@ input[type=number] {
     background-color: rgba(0, 0, 0, 0.05);
     border-radius: 4px;
 }
+
+/* Unit Slider */
+.unit-slider-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: var(--bg-secondary);
+    padding: 12px;
+    border-radius: 12px;
+    margin-top: 4px;
+    border: 1px solid #E5E5EA;
+}
+
+.unit-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    min-width: 30px;
+    text-align: center;
+}
+
+.unit-label.active {
+    color: var(--accent-color);
+}
+
+.slider-input {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right, var(--accent-color) 0%, var(--accent-color) 50%, #ddd 50%, #ddd 100%);
+    outline: none;
+    transition: background 0.3s;
+}
+
+.slider-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    border: 2px solid var(--accent-color);
+}
+
+.slider-input::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    border: 2px solid var(--accent-color);
+}
