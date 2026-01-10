@@ -20,8 +20,10 @@ let state = {
     // Session State
     currentSet: 1,
     targetSets: 4,
-    currentReps: 10,
+    currentReps: 0,
+    targetRepsSession: 10,
     currentWeight: 60,
+    targetWeightSession: 60,
 
     // Timer
     restTimer: 90, // seconds
@@ -153,8 +155,27 @@ function renderActiveEffortMode() {
     const controlsRow = document.createElement('div');
     controlsRow.className = 'row';
 
-    const repsControl = createStepperControl('Reps', state.currentReps, (val) => updateState('currentReps', val));
-    const weightControl = createStepperControl('Kg', state.currentWeight, (val) => updateState('currentWeight', val), 2.5);
+    // Reps Control: Displays "Current / Target"
+    const repsControl = createStepperControl(
+        'Reps',
+        state.currentReps,
+        (val) => {
+            if (val >= 0) updateState('currentReps', val);
+        },
+        1,
+        `<span style="color:var(--text-primary)">${state.currentReps}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetRepsSession}</span>`
+    );
+
+    // Weight Control: Displays "Current / Target"
+    const weightControl = createStepperControl(
+        'Kg',
+        state.currentWeight,
+        (val) => {
+            if (val >= 0) updateState('currentWeight', val);
+        },
+        2.5,
+        `<span style="color:var(--text-primary)">${state.currentWeight}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetWeightSession}</span>`
+    );
 
     controlsRow.appendChild(repsControl);
     controlsRow.appendChild(weightControl);
@@ -267,14 +288,14 @@ function renderSettingsMode() {
             </div>
             <div>
                 <label class="text-label">Reps</label>
-                <input type="number" id="setting-reps" class="setting-input" value="${state.currentReps}">
+                <input type="number" id="setting-reps" class="setting-input" value="${state.targetRepsSession}">
             </div>
         </div>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
             <div>
                 <label class="text-label">Weight (Kg)</label>
-                <input type="number" id="setting-weight" class="setting-input" value="${state.currentWeight}">
+                <input type="number" id="setting-weight" class="setting-input" value="${state.targetWeightSession}">
             </div>
             <div>
                 <label class="text-label">Rest (sec)</label>
@@ -427,7 +448,7 @@ function showEndSessionModal() {
     };
 }
 
-function createStepperControl(label, value, onUpdate, step = 1) {
+function createStepperControl(label, value, onUpdate, step = 1, displayValue = null) {
     const div = document.createElement('div');
     div.className = 'control-group';
 
@@ -435,7 +456,7 @@ function createStepperControl(label, value, onUpdate, step = 1) {
         <div class="text-label">${label}</div>
         <div class="stepper">
             <button class="btn stepper-btn minus">${Icons.Minus}</button>
-            <div class="input-display">${value}</div>
+            <div class="input-display">${displayValue !== null ? displayValue : value}</div>
             <button class="btn stepper-btn plus">${Icons.Plus}</button>
         </div>
     `;
@@ -451,8 +472,10 @@ function selectExercise(ex) {
     state.currentExercise = ex;
     state.currentSet = 1;
     state.targetSets = ex.defaultSets;
-    state.currentReps = ex.defaultReps;
+    state.currentReps = 0; // Reset count
+    state.targetRepsSession = ex.defaultReps;
     state.currentWeight = ex.defaultWeight;
+    state.targetWeightSession = ex.defaultWeight;
     state.mode = 'ACTIVE';
     state.activeSubMode = 'EFFORT';
     render();
@@ -486,6 +509,7 @@ function startRest() {
 function finishRest() {
     if (state.timerInterval) clearInterval(state.timerInterval);
     state.currentSet++;
+    state.currentReps = 0; // Reset counter for the new set
     state.activeSubMode = 'EFFORT';
     render();
 }
@@ -510,8 +534,9 @@ function saveSettingsAndClose() {
 
     // Update current session state
     state.targetSets = sets;
-    state.currentReps = reps;
-    state.currentWeight = weight;
+    state.targetRepsSession = reps; // Update target
+    state.currentWeight = weight; // Reset weight to new target usually? Or keep adjust? Let's just update goal.
+    state.targetWeightSession = weight;
     state.restTimer = rest;
 
     // Update persistent defaults for this exercise
@@ -522,8 +547,6 @@ function saveSettingsAndClose() {
             defaultExercises[exIndex].defaultReps = reps;
             defaultExercises[exIndex].defaultWeight = weight;
             saveExercises();
-
-            // Update the currentExercise reference too
             state.currentExercise = defaultExercises[exIndex];
         }
     }
