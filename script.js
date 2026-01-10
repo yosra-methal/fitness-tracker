@@ -282,7 +282,7 @@ function renderSettingsMode() {
     content.style.justifyContent = 'flex-start';
 
     content.innerHTML = `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
             <div>
                 <label class="text-label">Sets</label>
                 <input type="number" id="setting-sets" class="setting-input" value="${state.targetSets}">
@@ -291,9 +291,6 @@ function renderSettingsMode() {
                 <label class="text-label">Reps</label>
                 <input type="number" id="setting-reps" class="setting-input" value="${state.targetRepsSession}">
             </div>
-        </div>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
             <div>
                 <label class="text-label">Weight (Kg)</label>
                 <input type="number" id="setting-weight" class="setting-input" value="${state.targetWeightSession}">
