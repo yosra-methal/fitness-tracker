@@ -2,8 +2,10 @@
     --bg-color: #FFFFFF;
     --text-primary: #1C1C1E;
     --text-secondary: #8E8E93;
-    --accent-color: #007AFF; /* Apple Blue */
-    --accent-success: #34C759; /* Apple Green */
+    --accent-color: #007AFF;
+    /* Apple Blue */
+    --accent-success: #34C759;
+    /* Apple Green */
     --bg-secondary: #F2F2F7;
     --border-radius: 24px;
     --btn-radius: 999px;
@@ -34,7 +36,8 @@ body {
 
 #widget-container {
     width: 320px;
-    height: 380px; /* Fixed height for consistency */
+    height: 380px;
+    /* Fixed height for consistency */
     background-color: var(--bg-color);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -47,7 +50,9 @@ body {
 }
 
 /* Typography */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     font-weight: 600;
     color: var(--text-primary);
 }
@@ -152,7 +157,7 @@ h1, h2, h3 {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* Layout Utilities */
@@ -165,11 +170,35 @@ h1, h2, h3 {
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 48px 1fr 48px;
+    /* Fixed width for side actions to ensure center is truly centered */
     align-items: center;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
     height: 40px;
+}
+
+/* Center all headings inside the header area */
+.header h2,
+.header h3,
+.header .title-text {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.subtitle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: var(--spacing-md);
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 14px;
 }
 
 .content {
@@ -207,10 +236,28 @@ h1, h2, h3 {
     color: var(--text-primary);
     text-align: left;
     transition: background-color 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .exercise-item:hover {
     background-color: #E5E5EA;
+}
+
+.delete-btn {
+    padding: 8px;
+    color: #FF3B30;
+    /* Apple Red */
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.delete-btn:hover {
+    opacity: 1;
 }
 
 /* Timer */
@@ -224,8 +271,15 @@ h1, h2, h3 {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Form inputs for settings */
