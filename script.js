@@ -39,7 +39,7 @@ const Icons = {
     Plus: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
     Minus: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
     Star: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`,
-    Trash: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>` // Changed to behave like minus icon visually as requested
+    Trash: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`
 };
 
 // Render Functions
@@ -84,7 +84,7 @@ function renderSelectionMode() {
     const addBtn = document.createElement('button');
     addBtn.className = 'btn btn-icon';
     addBtn.innerHTML = Icons.Plus;
-    addBtn.onclick = showAddExerciseModal; // Changed to custom modal
+    addBtn.onclick = showAddExerciseModal;
 
     header.appendChild(leftDiv);
     header.appendChild(title);
@@ -108,10 +108,10 @@ function renderSelectionMode() {
 
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'delete-btn';
-        deleteBtn.innerHTML = Icons.Minus; // Using Minus icon for delete as requested
+        deleteBtn.innerHTML = Icons.Minus;
         deleteBtn.onclick = (e) => {
             e.stopPropagation();
-            showDeleteConfirmation(index); // Custom confirm modal
+            showDeleteConfirmation(index);
         };
 
         item.appendChild(nameSpan);
@@ -137,7 +137,6 @@ function renderActiveEffortMode() {
         <button class="btn btn-icon" id="settings-btn">${Icons.Gear}</button>
     `;
 
-    // Bind events after html creation
     header.querySelector('#back-btn').onclick = goBackToSelection;
     header.querySelector('#settings-btn').onclick = openSettings;
 
@@ -246,39 +245,47 @@ function renderSettingsMode() {
     const title = document.createElement('h3');
     title.textContent = 'Settings';
 
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'btn btn-secondary';
-    closeBtn.style.cssText = "padding: 8px 16px; height: 32px; font-size: 14px;";
-    closeBtn.textContent = 'OK';
-    closeBtn.onclick = closeSettings;
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'btn btn-primary';
+    saveBtn.style.cssText = "padding: 0 16px; height: 32px; font-size: 14px; width: auto;";
+    saveBtn.textContent = 'Save';
+    saveBtn.onclick = saveSettingsAndClose;
 
     header.appendChild(leftDiv);
     header.appendChild(title);
-    header.appendChild(closeBtn);
+    header.appendChild(saveBtn);
 
     const content = document.createElement('div');
     content.className = 'content';
     content.style.justifyContent = 'flex-start';
 
     content.innerHTML = `
-        <div style="margin-bottom: 20px;">
-            <label class="text-label">Target Sets</label>
-            <input type="number" class="setting-input" value="${state.targetSets}">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div>
+                <label class="text-label">Sets</label>
+                <input type="number" id="setting-sets" class="setting-input" value="${state.targetSets}">
+            </div>
+            <div>
+                <label class="text-label">Reps</label>
+                <input type="number" id="setting-reps" class="setting-input" value="${state.currentReps}">
+            </div>
         </div>
-        <div style="margin-bottom: 20px;">
-            <label class="text-label">Rest Time (sec)</label>
-            <input type="number" class="setting-input" value="${state.restTimer}">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div>
+                <label class="text-label">Weight (Kg)</label>
+                <input type="number" id="setting-weight" class="setting-input" value="${state.currentWeight}">
+            </div>
+            <div>
+                <label class="text-label">Rest (sec)</label>
+                <input type="number" id="setting-rest" class="setting-input" value="${state.restTimer}">
+            </div>
         </div>
-        <div>
-            <label class="text-label">Exercise</label>
-            <div class="text-secondary" style="margin-top: 8px; font-size: 16px;">${state.currentExercise ? state.currentExercise.name : 'None'}</div>
+        
+        <div class="text-secondary" style="font-size: 13px; margin-top: 8px; text-align: center;">
+            Saving will update the defaults for this exercise.
         </div>
     `;
-
-    // Bind change events
-    const inputs = content.querySelectorAll('input');
-    inputs[0].onchange = (e) => updateState('targetSets', e.target.value);
-    inputs[1].onchange = (e) => updateState('restTimer', e.target.value);
 
     view.appendChild(header);
     view.appendChild(content);
@@ -287,7 +294,6 @@ function renderSettingsMode() {
 
 // Modal Helpers
 function showModalUI(htmlContent) {
-    // Remove existing modal if any
     const existing = document.getElementById('active-modal');
     if (existing) existing.remove();
 
@@ -330,32 +336,55 @@ function showAddExerciseModal() {
     const overlay = showModalUI(`
         <div class="modal-card">
             <div class="modal-title">New Exercise</div>
-            <input type="text" class="modal-input" placeholder="Exercise name" id="new-ex-name">
+            
+            <input type="text" class="modal-input" placeholder="Exercise Name" id="new-ex-name" style="margin-bottom: 12px;">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px;">
+                <div>
+                    <label class="text-label">Sets</label>
+                    <input type="number" class="modal-input" value="4" id="new-ex-sets" style="margin-bottom:0; text-align:center;">
+                </div>
+                <div>
+                    <label class="text-label">Reps</label>
+                    <input type="number" class="modal-input" value="10" id="new-ex-reps" style="margin-bottom:0; text-align:center;">
+                </div>
+                <div>
+                    <label class="text-label">Kg</label>
+                    <input type="number" class="modal-input" value="10" id="new-ex-weight" style="margin-bottom:0; text-align:center;">
+                </div>
+            </div>
+
             <div class="modal-actions">
                 <button class="modal-btn modal-btn-cancel" id="modal-cancel">Cancel</button>
-                <button class="modal-btn modal-btn-confirm" id="modal-save">Add</button>
+                <button class="modal-btn modal-btn-confirm" id="modal-save">Create</button>
             </div>
         </div>
     `);
 
-    const input = overlay.querySelector('#new-ex-name');
-    input.focus();
+    const inputName = overlay.querySelector('#new-ex-name');
+    inputName.focus();
 
     overlay.querySelector('#modal-cancel').onclick = closeActiveModal;
     overlay.querySelector('#modal-save').onclick = () => {
-        const name = input.value.trim();
-        if (name) {
+        const name = inputName.value.trim();
+        const sets = Number(overlay.querySelector('#new-ex-sets').value);
+        const reps = Number(overlay.querySelector('#new-ex-reps').value);
+        const weight = Number(overlay.querySelector('#new-ex-weight').value);
+
+        if (name && sets > 0 && reps > 0) {
             const newEx = {
                 id: 'ex_' + Date.now(),
                 name: name,
-                defaultSets: 4,
-                defaultReps: 10,
-                defaultWeight: 20
+                defaultSets: sets,
+                defaultReps: reps,
+                defaultWeight: weight
             };
             defaultExercises.push(newEx);
             saveExercises();
             closeActiveModal();
             render();
+        } else {
+            inputName.style.borderColor = "#FF3B30";
         }
     };
 }
@@ -364,7 +393,7 @@ function showCompletionModal() {
     const overlay = showModalUI(`
         <div class="modal-card">
             <div class="modal-title">Good Job! 🎉</div>
-            <div class="modal-body">You have completed all sets for this exercise.</div>
+            <div class="modal-body">You have completed all sets.</div>
             <div class="modal-actions">
                 <button class="modal-btn modal-btn-confirm" id="modal-ok">Finish</button>
             </div>
@@ -382,7 +411,7 @@ function showEndSessionModal() {
     const overlay = showModalUI(`
         <div class="modal-card">
             <div class="modal-title">End Session?</div>
-            <div class="modal-body">Your progress for this exercise will be lost.</div>
+            <div class="modal-body">Your progress will be lost.</div>
             <div class="modal-actions">
                 <button class="modal-btn modal-btn-cancel" id="modal-stay">Cancel</button>
                 <button class="modal-btn modal-btn-danger" id="modal-leave">End</button>
@@ -433,7 +462,7 @@ function validateSet() {
     if (state.currentSet < state.targetSets) {
         startRest();
     } else {
-        showCompletionModal(); // Replaced alert
+        showCompletionModal();
     }
 }
 
@@ -473,13 +502,38 @@ function openSettings() {
     render();
 }
 
-function closeSettings() {
+function saveSettingsAndClose() {
+    const sets = Number(document.getElementById('setting-sets').value);
+    const reps = Number(document.getElementById('setting-reps').value);
+    const weight = Number(document.getElementById('setting-weight').value);
+    const rest = Number(document.getElementById('setting-rest').value);
+
+    // Update current session state
+    state.targetSets = sets;
+    state.currentReps = reps;
+    state.currentWeight = weight;
+    state.restTimer = rest;
+
+    // Update persistent defaults for this exercise
+    if (state.currentExercise) {
+        const exIndex = defaultExercises.findIndex(e => e.id === state.currentExercise.id);
+        if (exIndex !== -1) {
+            defaultExercises[exIndex].defaultSets = sets;
+            defaultExercises[exIndex].defaultReps = reps;
+            defaultExercises[exIndex].defaultWeight = weight;
+            saveExercises();
+
+            // Update the currentExercise reference too
+            state.currentExercise = defaultExercises[exIndex];
+        }
+    }
+
     state.mode = 'ACTIVE';
     render();
 }
 
 function goBackToSelection() {
-    showEndSessionModal(); // Replaced confirm
+    showEndSessionModal();
 }
 
 function saveExercises() {
