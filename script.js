@@ -16,6 +16,7 @@ let state = {
     mode: 'SELECTION', // SELECTION, ACTIVE, SETTINGS
     activeSubMode: 'EFFORT', // EFFORT, REST
     currentExercise: null,
+    unit: 'kg', // 'kg' or 'lbs'
 
     // Session State
     currentSet: 1,
@@ -30,6 +31,12 @@ let state = {
     timerRemaining: 90,
     timerInterval: null
 };
+
+// Check for saved unit preference
+const savedUnit = localStorage.getItem('fitness_unit');
+if (savedUnit) {
+    state.unit = savedUnit;
+}
 
 // DOM Elements
 const container = document.getElementById('widget-container');
@@ -107,7 +114,6 @@ function renderSelectionMode() {
         const nameSpan = document.createElement('span');
         nameSpan.textContent = ex.name;
         nameSpan.style.flex = '1';
-        // Removed onclick from here
 
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'delete-btn';
@@ -168,8 +174,9 @@ function renderActiveEffortMode() {
     );
 
     // Weight Control
+    const weightLabel = state.unit === 'lbs' ? 'Lbs' : 'Kg';
     const weightControl = createStepperControl(
-        'Kg',
+        weightLabel,
         state.currentWeight,
         (val) => {
             if (val >= 0) updateState('currentWeight', val);
@@ -276,8 +283,18 @@ function renderSettingsMode() {
     content.className = 'content';
     content.style.justifyContent = 'flex-start';
 
+    const weightLabel = state.unit === 'lbs' ? 'Weight (Lbs)' : 'Weight (Kg)';
+    const isLbs = state.unit === 'lbs' ? 'checked' : '';
+
     content.innerHTML = `
         <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+            <div class="toggle-container">
+                <span class="toggle-label">Metric (Kg) / Imperial (Lbs)</span>
+                <label class="switch">
+                    <input type="checkbox" id="setting-unit-toggle" ${isLbs}>
+                    <span class="slider"></span>
+                </label>
+            </div>
             <div>
                 <label class="text-label">Sets</label>
                 <input type="number" id="setting-sets" class="setting-input" value="${state.targetSets}">
@@ -287,7 +304,7 @@ function renderSettingsMode() {
                 <input type="number" id="setting-reps" class="setting-input" value="${state.targetRepsSession}">
             </div>
             <div>
-                <label class="text-label">Weight (Kg)</label>
+                <label class="text-label">${weightLabel}</label>
                 <input type="number" id="setting-weight" class="setting-input" value="${state.targetWeightSession}">
             </div>
             <div>
@@ -577,11 +594,25 @@ function saveSettingsAndClose() {
     const reps = Number(document.getElementById('setting-reps').value);
     const weight = Number(document.getElementById('setting-weight').value);
     const rest = Number(document.getElementById('setting-rest').value);
+    const isLbs = document.getElementById('setting-unit-toggle').checked;
+
+    // Check if unit changed
+    const newUnit = isLbs ? 'lbs' : 'kg';
+    if (newUnit !== state.unit) {
+        // Convert all default exercise weights
+        const ratio = newUnit === 'lbs' ? 2.20462 : 0.453592;
+        defaultExercises.forEach(ex => {
+            ex.defaultWeight = Math.round(ex.defaultWeight * ratio);
+        });
+        saveExercises();
+        state.unit = newUnit;
+        localStorage.setItem('fitness_unit', newUnit);
+    }
 
     // Update current session state
     state.targetSets = sets;
     state.targetRepsSession = reps; // Update target
-    state.currentWeight = weight; // Reset weight to new target usually? Or keep adjust? Let's just update goal.
+    state.currentWeight = weight; // This value is already in the displayed unit (user edited it), so just save it.
     state.targetWeightSession = weight;
     state.restTimer = rest;
 
