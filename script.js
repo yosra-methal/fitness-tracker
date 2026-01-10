@@ -270,7 +270,7 @@ function renderSettingsMode() {
     header.className = 'header';
 
     const leftDiv = document.createElement('div');
-    const rightDiv = document.createElement('div'); // Spacer for alignment
+    const rightDiv = document.createElement('div');
 
     const title = document.createElement('h3');
     title.textContent = 'Settings';
@@ -284,16 +284,16 @@ function renderSettingsMode() {
     content.style.justifyContent = 'flex-start';
 
     const weightLabel = state.unit === 'lbs' ? 'Weight (Lbs)' : 'Weight (Kg)';
-    const isLbs = state.unit === 'lbs' ? 'checked' : '';
+    const sliderValue = state.unit === 'lbs' ? 1 : 0;
+    const kgActive = state.unit === 'kg' ? 'active' : '';
+    const lbsActive = state.unit === 'lbs' ? 'active' : '';
 
     content.innerHTML = `
         <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
-            <div class="toggle-container">
-                <span class="toggle-label">Metric (Kg) / Imperial (Lbs)</span>
-                <label class="switch">
-                    <input type="checkbox" id="setting-unit-toggle" ${isLbs}>
-                    <span class="slider"></span>
-                </label>
+            <div class="unit-slider-container">
+                <span class="unit-label ${kgActive}">Kg</span>
+                <input type="range" id="setting-unit-slider" class="slider-input" min="0" max="1" step="1" value="${sliderValue}">
+                <span class="unit-label ${lbsActive}">Lbs</span>
             </div>
             <div>
                 <label class="text-label">Sets</label>
@@ -313,6 +313,20 @@ function renderSettingsMode() {
             </div>
         </div>
     `;
+
+    // Add listener for slider visual update
+    const slider = content.querySelector('#setting-unit-slider');
+    slider.oninput = (e) => {
+        const val = e.target.value;
+        const labels = content.querySelectorAll('.unit-label');
+        if (val == 0) {
+            labels[0].classList.add('active');
+            labels[1].classList.remove('active');
+        } else {
+            labels[0].classList.remove('active');
+            labels[1].classList.add('active');
+        }
+    };
 
     const footer = document.createElement('div');
     footer.className = 'footer';
@@ -594,7 +608,8 @@ function saveSettingsAndClose() {
     const reps = Number(document.getElementById('setting-reps').value);
     const weight = Number(document.getElementById('setting-weight').value);
     const rest = Number(document.getElementById('setting-rest').value);
-    const isLbs = document.getElementById('setting-unit-toggle').checked;
+    const sliderVal = document.getElementById('setting-unit-slider').value;
+    const isLbs = sliderVal == 1;
 
     // Check if unit changed
     const newUnit = isLbs ? 'lbs' : 'kg';
