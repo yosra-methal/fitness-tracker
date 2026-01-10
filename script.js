@@ -173,7 +173,7 @@ function renderActiveEffortMode() {
         (val) => {
             if (val >= 0) updateState('currentWeight', val);
         },
-        2.5,
+        1, // Step is now 1kg
         `<span style="color:var(--text-primary)">${state.currentWeight}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetWeightSession}</span>`
     );
 
