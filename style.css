@@ -246,18 +246,107 @@ h3 {
 }
 
 .delete-btn {
-    padding: 8px;
-    color: #FF3B30;
-    /* Apple Red */
-    background: none;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--text-secondary);
+    background-color: #E5E5EA;
     border: none;
     cursor: pointer;
-    opacity: 0.6;
-    transition: opacity 0.2s;
+    transition: all 0.2s;
 }
 
 .delete-btn:hover {
-    opacity: 1;
+    background-color: #D1D1D6;
+    color: var(--text-primary);
+}
+
+/* Internal Modals */
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-card {
+    background-color: var(--bg-color);
+    width: 85%;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    transform: scale(0.95);
+    animation: scaleIn 0.2s ease forwards;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.modal-body {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+}
+
+.modal-btn-cancel {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.modal-btn-confirm {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.modal-btn-danger {
+    background-color: #FF3B30;
+    color: white;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #E5E5EA;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    font-size: 16px;
+}
+
+@keyframes scaleIn {
+    to {
+        transform: scale(1);
+    }
 }
 
 /* Timer */

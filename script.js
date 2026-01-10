@@ -39,23 +39,33 @@ const Icons = {
     Plus: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
     Minus: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
     Star: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`,
-    Trash: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`
+    Trash: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>` // Changed to behave like minus icon visually as requested
 };
 
 // Render Functions
 function render() {
     container.innerHTML = '';
 
+    // Main View
+    let content;
     if (state.mode === 'SELECTION') {
-        renderSelectionMode();
+        content = renderSelectionMode();
     } else if (state.mode === 'ACTIVE') {
         if (state.activeSubMode === 'EFFORT') {
-            renderActiveEffortMode();
+            content = renderActiveEffortMode();
         } else {
-            renderActiveRestMode();
+            content = renderActiveRestMode();
         }
     } else if (state.mode === 'SETTINGS') {
-        renderSettingsMode();
+        content = renderSettingsMode();
+    }
+
+    container.appendChild(content);
+
+    // Render Overlay Modals if any exists
+    const modal = document.getElementById('active-modal');
+    if (modal) {
+        container.appendChild(modal);
     }
 }
 
@@ -63,33 +73,27 @@ function renderSelectionMode() {
     const view = document.createElement('div');
     view.className = 'view';
 
-    // Header with Grid Layout
     const header = document.createElement('div');
     header.className = 'header';
 
-    // Empty Left
     const leftDiv = document.createElement('div');
 
-    // Center Title
     const title = document.createElement('h2');
     title.textContent = 'Exercises';
 
-    // Right Add Button
     const addBtn = document.createElement('button');
     addBtn.className = 'btn btn-icon';
     addBtn.innerHTML = Icons.Plus;
-    addBtn.onclick = addNewExercise;
+    addBtn.onclick = showAddExerciseModal; // Changed to custom modal
 
     header.appendChild(leftDiv);
     header.appendChild(title);
     header.appendChild(addBtn);
 
-    // Subtitle "Favorites"
     const subtitle = document.createElement('div');
     subtitle.className = 'subtitle-container';
     subtitle.innerHTML = `Favorites ${Icons.Star}`;
 
-    // List
     const list = document.createElement('div');
     list.className = 'exercise-list';
 
@@ -104,10 +108,10 @@ function renderSelectionMode() {
 
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'delete-btn';
-        deleteBtn.innerHTML = Icons.Trash;
+        deleteBtn.innerHTML = Icons.Minus; // Using Minus icon for delete as requested
         deleteBtn.onclick = (e) => {
             e.stopPropagation();
-            deleteExercise(index);
+            showDeleteConfirmation(index); // Custom confirm modal
         };
 
         item.appendChild(nameSpan);
@@ -118,27 +122,28 @@ function renderSelectionMode() {
     view.appendChild(header);
     view.appendChild(subtitle);
     view.appendChild(list);
-    container.appendChild(view);
+    return view;
 }
 
 function renderActiveEffortMode() {
     const view = document.createElement('div');
     view.className = 'view';
 
-    // Header
     const header = document.createElement('div');
     header.className = 'header';
     header.innerHTML = `
-        <button class="btn btn-icon" onclick="goBackToSelection()">${Icons.ChevronLeft}</button>
+        <button class="btn btn-icon" id="back-btn">${Icons.ChevronLeft}</button>
         <div class="title-text">${state.currentExercise.name}</div>
-        <button class="btn btn-icon" onclick="openSettings()">${Icons.Gear}</button>
+        <button class="btn btn-icon" id="settings-btn">${Icons.Gear}</button>
     `;
 
-    // Body
+    // Bind events after html creation
+    header.querySelector('#back-btn').onclick = goBackToSelection;
+    header.querySelector('#settings-btn').onclick = openSettings;
+
     const content = document.createElement('div');
     content.className = 'content';
 
-    // Set Counter
     const setDisplay = document.createElement('div');
     setDisplay.style.textAlign = 'center';
     setDisplay.innerHTML = `
@@ -146,13 +151,10 @@ function renderActiveEffortMode() {
         <div style="font-size: 48px; font-weight: 800; color: var(--text-primary); margin-top: 4px;">${state.currentSet} <span style="color: var(--text-secondary); font-size: 24px;">/ ${state.targetSets}</span></div>
     `;
 
-    // Controls Row
     const controlsRow = document.createElement('div');
     controlsRow.className = 'row';
 
-    // Reps Control
     const repsControl = createStepperControl('Reps', state.currentReps, (val) => updateState('currentReps', val));
-    // Weight Control
     const weightControl = createStepperControl('Kg', state.currentWeight, (val) => updateState('currentWeight', val), 2.5);
 
     controlsRow.appendChild(repsControl);
@@ -161,7 +163,6 @@ function renderActiveEffortMode() {
     content.appendChild(setDisplay);
     content.appendChild(controlsRow);
 
-    // Footer
     const footer = document.createElement('div');
     footer.className = 'footer';
     const validateBtn = document.createElement('button');
@@ -174,23 +175,22 @@ function renderActiveEffortMode() {
     view.appendChild(header);
     view.appendChild(content);
     view.appendChild(footer);
-    container.appendChild(view);
+    return view;
 }
 
 function renderActiveRestMode() {
     const view = document.createElement('div');
     view.className = 'view';
 
-    // Header
     const header = document.createElement('div');
     header.className = 'header';
     header.innerHTML = `
         <div style="width: 40px"></div>
         <div class="title-text">Rest</div>
-        <button class="btn btn-icon" onclick="openSettings()">${Icons.Gear}</button>
+        <button class="btn btn-icon" id="settings-btn">${Icons.Gear}</button>
     `;
+    header.querySelector('#settings-btn').onclick = openSettings;
 
-    // Body
     const content = document.createElement('div');
     content.className = 'content';
     content.style.alignItems = 'center';
@@ -206,21 +206,23 @@ function renderActiveRestMode() {
     content.appendChild(timerDisplay);
     content.appendChild(nextSetInfo);
 
-    // Controls to adjust timer on fly
     const timerControls = document.createElement('div');
     timerControls.className = 'row';
     timerControls.style.marginTop = '16px';
     timerControls.innerHTML = `
-        <button class="btn btn-secondary" onclick="adjustTimer(-10)">-10s</button>
-        <button class="btn btn-secondary" onclick="adjustTimer(10)">+10s</button>
+        <button class="btn btn-secondary" id="tm-10">-10s</button>
+        <button class="btn btn-secondary" id="tm-plus10">+10s</button>
     `;
+
+    timerControls.querySelector('#tm-10').onclick = () => adjustTimer(-10);
+    timerControls.querySelector('#tm-plus10').onclick = () => adjustTimer(10);
+
     content.appendChild(timerControls);
 
-    // Footer
     const footer = document.createElement('div');
     footer.className = 'footer';
     const skipBtn = document.createElement('button');
-    skipBtn.className = 'btn btn-primary'; // Blue for resume
+    skipBtn.className = 'btn btn-primary';
     skipBtn.textContent = 'Resume';
     skipBtn.onclick = finishRest;
 
@@ -229,7 +231,7 @@ function renderActiveRestMode() {
     view.appendChild(header);
     view.appendChild(content);
     view.appendChild(footer);
-    container.appendChild(view);
+    return view;
 }
 
 function renderSettingsMode() {
@@ -258,15 +260,14 @@ function renderSettingsMode() {
     content.className = 'content';
     content.style.justifyContent = 'flex-start';
 
-    // Settings inputs
     content.innerHTML = `
         <div style="margin-bottom: 20px;">
             <label class="text-label">Target Sets</label>
-            <input type="number" class="setting-input" value="${state.targetSets}" onchange="updateState('targetSets', this.value)">
+            <input type="number" class="setting-input" value="${state.targetSets}">
         </div>
         <div style="margin-bottom: 20px;">
             <label class="text-label">Rest Time (sec)</label>
-            <input type="number" class="setting-input" value="${state.restTimer}" onchange="updateState('restTimer', this.value)">
+            <input type="number" class="setting-input" value="${state.restTimer}">
         </div>
         <div>
             <label class="text-label">Exercise</label>
@@ -274,12 +275,129 @@ function renderSettingsMode() {
         </div>
     `;
 
+    // Bind change events
+    const inputs = content.querySelectorAll('input');
+    inputs[0].onchange = (e) => updateState('targetSets', e.target.value);
+    inputs[1].onchange = (e) => updateState('restTimer', e.target.value);
+
     view.appendChild(header);
     view.appendChild(content);
-    container.appendChild(view);
+    return view;
 }
 
-// Helper Components
+// Modal Helpers
+function showModalUI(htmlContent) {
+    // Remove existing modal if any
+    const existing = document.getElementById('active-modal');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'active-modal';
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML = htmlContent;
+
+    container.appendChild(overlay);
+    return overlay;
+}
+
+function closeActiveModal() {
+    const existing = document.getElementById('active-modal');
+    if (existing) existing.remove();
+}
+
+function showDeleteConfirmation(index) {
+    const overlay = showModalUI(`
+        <div class="modal-card">
+            <div class="modal-title">Delete this exercice ?</div>
+            <div class="modal-body">This action cannot be undone.</div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="modal-no">No</button>
+                <button class="modal-btn modal-btn-danger" id="modal-yes">Yes</button>
+            </div>
+        </div>
+    `);
+
+    overlay.querySelector('#modal-no').onclick = closeActiveModal;
+    overlay.querySelector('#modal-yes').onclick = () => {
+        defaultExercises.splice(index, 1);
+        saveExercises();
+        closeActiveModal();
+        render(); // Re-render list
+    };
+}
+
+function showAddExerciseModal() {
+    const overlay = showModalUI(`
+        <div class="modal-card">
+            <div class="modal-title">New Exercise</div>
+            <input type="text" class="modal-input" placeholder="Exercise name" id="new-ex-name">
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="modal-cancel">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" id="modal-save">Add</button>
+            </div>
+        </div>
+    `);
+
+    const input = overlay.querySelector('#new-ex-name');
+    input.focus();
+
+    overlay.querySelector('#modal-cancel').onclick = closeActiveModal;
+    overlay.querySelector('#modal-save').onclick = () => {
+        const name = input.value.trim();
+        if (name) {
+            const newEx = {
+                id: 'ex_' + Date.now(),
+                name: name,
+                defaultSets: 4,
+                defaultReps: 10,
+                defaultWeight: 20
+            };
+            defaultExercises.push(newEx);
+            saveExercises();
+            closeActiveModal();
+            render();
+        }
+    };
+}
+
+function showCompletionModal() {
+    const overlay = showModalUI(`
+        <div class="modal-card">
+            <div class="modal-title">Good Job! 🎉</div>
+            <div class="modal-body">You have completed all sets for this exercise.</div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-confirm" id="modal-ok">Finish</button>
+            </div>
+        </div>
+    `);
+
+    overlay.querySelector('#modal-ok').onclick = () => {
+        closeActiveModal();
+        state.mode = 'SELECTION';
+        render();
+    };
+}
+
+function showEndSessionModal() {
+    const overlay = showModalUI(`
+        <div class="modal-card">
+            <div class="modal-title">End Session?</div>
+            <div class="modal-body">Your progress for this exercise will be lost.</div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="modal-stay">Cancel</button>
+                <button class="modal-btn modal-btn-danger" id="modal-leave">End</button>
+            </div>
+        </div>
+    `);
+
+    overlay.querySelector('#modal-stay').onclick = closeActiveModal;
+    overlay.querySelector('#modal-leave').onclick = () => {
+        closeActiveModal();
+        state.mode = 'SELECTION';
+        render();
+    };
+}
+
 function createStepperControl(label, value, onUpdate, step = 1) {
     const div = document.createElement('div');
     div.className = 'control-group';
@@ -315,10 +433,7 @@ function validateSet() {
     if (state.currentSet < state.targetSets) {
         startRest();
     } else {
-        // Exercise Complete
-        alert("Exercise Complete!");
-        state.mode = 'SELECTION';
-        render();
+        showCompletionModal(); // Replaced alert
     }
 }
 
@@ -333,7 +448,6 @@ function startRest() {
         if (state.timerRemaining <= 0) {
             finishRest();
         } else {
-            // Update timer display directly
             const display = document.querySelector('.timer-display');
             if (display) display.textContent = formatTime(state.timerRemaining);
         }
@@ -354,45 +468,18 @@ function adjustTimer(seconds) {
 }
 
 function openSettings() {
-    state.previousMode = state.mode; // Should capture 'ACTIVE'
+    state.previousMode = state.mode;
     state.mode = 'SETTINGS';
     render();
 }
 
 function closeSettings() {
-    state.mode = 'ACTIVE'; // Return to active
+    state.mode = 'ACTIVE';
     render();
 }
 
 function goBackToSelection() {
-    if (confirm("End current session?")) {
-        state.mode = 'SELECTION';
-        render();
-    }
-}
-
-function addNewExercise() {
-    const name = prompt("Enter new exercise name:");
-    if (name) {
-        const newEx = {
-            id: 'ex_' + Date.now(),
-            name: name,
-            defaultSets: 4,
-            defaultReps: 10,
-            defaultWeight: 20
-        };
-        defaultExercises.push(newEx);
-        saveExercises();
-        render();
-    }
-}
-
-function deleteExercise(index) {
-    if (confirm(`Delete "${defaultExercises[index].name}"?`)) {
-        defaultExercises.splice(index, 1);
-        saveExercises();
-        render();
-    }
+    showEndSessionModal(); // Replaced confirm
 }
 
 function saveExercises() {
