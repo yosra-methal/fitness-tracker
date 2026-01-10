@@ -164,7 +164,7 @@ function renderActiveEffortMode() {
             if (val >= 0) updateState('currentReps', val);
         },
         1,
-        `<span class="editable-curr-val" style="color:var(--text-primary); border-bottom: 2px solid transparent;">${state.currentReps}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetRepsSession}</span>`
+        `<span class="editable-curr-val">${state.currentReps}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetRepsSession}</span>`
     );
 
     // Weight Control
@@ -175,7 +175,7 @@ function renderActiveEffortMode() {
             if (val >= 0) updateState('currentWeight', val);
         },
         1,
-        `<span class="editable-curr-val" style="color:var(--text-primary); border-bottom: 2px solid transparent;">${state.currentWeight}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetWeightSession}</span>`
+        `<span class="editable-curr-val">${state.currentWeight}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetWeightSession}</span>`
     );
 
     controlsRow.appendChild(repsControl);
