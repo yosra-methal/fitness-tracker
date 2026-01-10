@@ -265,9 +265,14 @@ function renderActiveRestMode() {
 function renderSettingsMode() {
     const view = document.createElement('div');
     view.className = 'view';
+    // Ensure view flex column for footer stickiness
+    view.style.display = 'flex';
+    view.style.flexDirection = 'column';
+    view.style.height = '100%';
 
     const header = document.createElement('div');
     header.className = 'header';
+    header.style.flexShrink = '0';
 
     const leftDiv = document.createElement('div');
     const rightDiv = document.createElement('div');
@@ -281,19 +286,20 @@ function renderSettingsMode() {
 
     const content = document.createElement('div');
     content.className = 'content';
+    // Overriding content styles for settings specifics
     content.style.justifyContent = 'flex-start';
+    content.style.paddingBottom = '16px';
 
-    const weightLabel = state.unit === 'lbs' ? 'Weight (Lbs)' : 'Weight (Kg)';
-    const sliderValue = state.unit === 'lbs' ? 1 : 0;
-    const kgActive = state.unit === 'kg' ? 'active' : '';
-    const lbsActive = state.unit === 'lbs' ? 'active' : '';
+    const isLbs = state.unit === 'lbs';
 
     content.innerHTML = `
-        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
-            <div class="unit-slider-container">
-                <span class="unit-label ${kgActive}">Kg</span>
-                <input type="range" id="setting-unit-slider" class="slider-input" min="0" max="1" step="1" value="${sliderValue}">
-                <span class="unit-label ${lbsActive}">Lbs</span>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="ios-switch-container">
+                <span class="ios-switch-label">Imperial Units (Lbs)</span>
+                <label class="ios-switch">
+                    <input type="checkbox" id="setting-unit-toggle" ${isLbs ? 'checked' : ''}>
+                    <span class="ios-slider"></span>
+                </label>
             </div>
             <div>
                 <label class="text-label">Sets</label>
@@ -304,7 +310,7 @@ function renderSettingsMode() {
                 <input type="number" id="setting-reps" class="setting-input" value="${state.targetRepsSession}">
             </div>
             <div>
-                <label class="text-label">${weightLabel}</label>
+                <label class="text-label">Weight (${state.unit === 'lbs' ? 'Lbs' : 'Kg'})</label>
                 <input type="number" id="setting-weight" class="setting-input" value="${state.targetWeightSession}">
             </div>
             <div>
@@ -314,22 +320,9 @@ function renderSettingsMode() {
         </div>
     `;
 
-    // Add listener for slider visual update
-    const slider = content.querySelector('#setting-unit-slider');
-    slider.oninput = (e) => {
-        const val = e.target.value;
-        const labels = content.querySelectorAll('.unit-label');
-        if (val == 0) {
-            labels[0].classList.add('active');
-            labels[1].classList.remove('active');
-        } else {
-            labels[0].classList.remove('active');
-            labels[1].classList.add('active');
-        }
-    };
-
     const footer = document.createElement('div');
     footer.className = 'footer';
+    footer.style.flexShrink = '0';
 
     const saveBtn = document.createElement('button');
     saveBtn.className = 'btn btn-primary';
