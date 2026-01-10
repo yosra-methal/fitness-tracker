@@ -533,7 +533,12 @@ function saveSettingsAndClose() {
 }
 
 function goBackToSelection() {
-    showEndSessionModal();
+    if (state.currentSet > 1) {
+        showEndSessionModal();
+    } else {
+        state.mode = 'SELECTION';
+        render();
+    }
 }
 
 function saveExercises() {
