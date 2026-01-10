@@ -263,19 +263,14 @@ function renderSettingsMode() {
     header.className = 'header';
 
     const leftDiv = document.createElement('div');
+    const rightDiv = document.createElement('div'); // Spacer for alignment
 
     const title = document.createElement('h3');
     title.textContent = 'Settings';
 
-    const saveBtn = document.createElement('button');
-    saveBtn.className = 'btn btn-primary';
-    saveBtn.style.cssText = "padding: 0 16px; height: 32px; font-size: 14px; width: auto;";
-    saveBtn.textContent = 'Save';
-    saveBtn.onclick = saveSettingsAndClose;
-
     header.appendChild(leftDiv);
     header.appendChild(title);
-    header.appendChild(saveBtn);
+    header.appendChild(rightDiv);
 
     const content = document.createElement('div');
     content.className = 'content';
@@ -300,14 +295,21 @@ function renderSettingsMode() {
                 <input type="number" id="setting-rest" class="setting-input" value="${state.restTimer}">
             </div>
         </div>
-        
-        <div class="text-secondary" style="font-size: 13px; margin-top: 8px; text-align: center;">
-            Saving will update the defaults for this exercise.
-        </div>
     `;
+
+    const footer = document.createElement('div');
+    footer.className = 'footer';
+
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'btn btn-primary';
+    saveBtn.textContent = 'Save';
+    saveBtn.onclick = saveSettingsAndClose;
+
+    footer.appendChild(saveBtn);
 
     view.appendChild(header);
     view.appendChild(content);
+    view.appendChild(footer);
     return view;
 }
 
