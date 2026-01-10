@@ -183,8 +183,8 @@ h3 {
 .header h3,
 .header .title-text {
     text-align: center;
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 24px;
+    font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -198,7 +198,8 @@ h3 {
     margin-bottom: var(--spacing-md);
     color: var(--text-secondary);
     font-weight: 500;
-    font-size: 14px;
+    font-size: 13px;
+    letter-spacing: 0.5px;
 }
 
 .content {
@@ -251,17 +252,17 @@ h3 {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
     color: var(--text-secondary);
-    background-color: #E5E5EA;
+    background-color: transparent;
     border: none;
     cursor: pointer;
     transition: all 0.2s;
+    opacity: 0.6;
 }
 
 .delete-btn:hover {
-    background-color: #D1D1D6;
     color: var(--text-primary);
+    opacity: 1;
 }
 
 /* Internal Modals */
