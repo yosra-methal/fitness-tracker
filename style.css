@@ -124,40 +124,49 @@ h3 {
 .control-group {
     background-color: var(--bg-secondary);
     border-radius: 16px;
-    padding: 12px;
+    padding: 8px 6px;
+    /* Reduced horizontal padding */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     flex: 1;
+    min-width: 0;
+    /* Allow flex shrinking */
 }
 
 .input-display {
-    font-size: 24px;
+    font-size: 20px;
+    /* Reduced from 24px to fit "25/50kg" */
     font-weight: 700;
     color: var(--text-primary);
     margin: 4px 0;
+    white-space: nowrap;
 }
 
 .stepper {
     display: flex;
-    gap: 12px;
+    gap: 4px;
+    /* Tightened gap */
     align-items: center;
     width: 100%;
     justify-content: space-between;
 }
 
 .stepper-btn {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    /* Slightly smaller buttons */
+    height: 28px;
     border-radius: 50%;
     background-color: white;
     color: var(--accent-color);
-    font-size: 20px;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+    /* Prevent button shrinking */
 }
 
 /* Layout Utilities */
