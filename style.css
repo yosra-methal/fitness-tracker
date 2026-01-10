@@ -35,9 +35,10 @@ body {
 }
 
 #widget-container {
-    width: 320px;
-    height: 380px;
-    /* Fixed height for consistency */
+    width: 350px;
+    /* Increased from 320px */
+    height: 460px;
+    /* Increased height to fit 4 items */
     background-color: var(--bg-color);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -138,7 +139,8 @@ h3 {
 .input-display {
     font-size: 20px;
     /* Reduced from 24px to fit "25/50kg" */
-    font-weight: 700;
+    font-weight: 600;
+    /* Reduced from 700 */
     color: var(--text-primary);
     margin: 4px 0;
     white-space: nowrap;
@@ -146,8 +148,8 @@ h3 {
 
 .stepper {
     display: flex;
-    gap: 4px;
-    /* Tightened gap */
+    gap: 12px;
+    /* Increased from 4px */
     align-items: center;
     width: 100%;
     justify-content: space-between;
