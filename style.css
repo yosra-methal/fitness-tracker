@@ -65,11 +65,15 @@ h3 {
 }
 
 .text-label {
-    font-size: 12px;
+    font-size: 13px;
+    /* Increased from 12px for better proportion */
+    font-weight: 600;
+    /* Added weight */
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    /* Increased from 4px */
     display: block;
     /* Ensure margin applies to labels */
 }

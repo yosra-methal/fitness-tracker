@@ -293,7 +293,7 @@ function renderSettingsMode() {
     const isLbs = state.unit === 'lbs';
 
     content.innerHTML = `
-        <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
             <div>
                 <label class="text-label">Sets</label>
                 <input type="number" id="setting-sets" class="setting-input" value="${state.targetSets}">
