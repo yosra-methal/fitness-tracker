@@ -155,7 +155,7 @@ function renderActiveEffortMode() {
     const controlsRow = document.createElement('div');
     controlsRow.className = 'row';
 
-    // Reps Control: Displays "Current / Target"
+    // Reps Control
     const repsControl = createStepperControl(
         'Reps',
         state.currentReps,
@@ -163,10 +163,10 @@ function renderActiveEffortMode() {
             if (val >= 0) updateState('currentReps', val);
         },
         1,
-        `<span style="color:var(--text-primary)">${state.currentReps}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetRepsSession}</span>`
+        `<span class="editable-curr-val" style="color:var(--text-primary); border-bottom: 2px solid transparent;">${state.currentReps}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetRepsSession}</span>`
     );
 
-    // Weight Control: Displays "Current / Target"
+    // Weight Control
     const weightControl = createStepperControl(
         'Kg',
         state.currentWeight,
@@ -174,7 +174,7 @@ function renderActiveEffortMode() {
             if (val >= 0) updateState('currentWeight', val);
         },
         1,
-        `<span style="color:var(--text-primary)">${state.currentWeight}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetWeightSession}</span>`
+        `<span class="editable-curr-val" style="color:var(--text-primary); border-bottom: 2px solid transparent;">${state.currentWeight}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetWeightSession}</span>`
     );
 
     controlsRow.appendChild(repsControl);
@@ -448,6 +448,7 @@ function showEndSessionModal() {
     };
 }
 
+// Helper to create stepper controls
 function createStepperControl(label, value, onUpdate, step = 1, displayValue = null) {
     const div = document.createElement('div');
     div.className = 'control-group';
@@ -464,46 +465,50 @@ function createStepperControl(label, value, onUpdate, step = 1, displayValue = n
     div.querySelector('.minus').onclick = () => onUpdate(Number(value) - step);
     div.querySelector('.plus').onclick = () => onUpdate(Number(value) + step);
 
-    // Inline edit logic
-    const displayContainer = div.querySelector('.input-display');
-    displayContainer.style.cursor = 'pointer';
-    displayContainer.onclick = () => {
-        const input = document.createElement('input');
-        input.type = 'number';
-        input.value = value;
+    // Specific inline edit logic for the "Current" value only
+    // It targets an element with class .editable-curr-val within displayValue
+    const editableSpan = div.querySelector('.editable-curr-val');
+    if (editableSpan) {
+        editableSpan.style.cursor = 'pointer';
+        editableSpan.title = "Click to edit";
 
-        // Inline styles to match the display
-        input.style.width = '100%';
-        input.style.maxWidth = '80px';
-        input.style.textAlign = 'center';
-        input.style.fontSize = '20px';
-        input.style.fontWeight = '600';
-        input.style.border = 'none';
-        input.style.background = 'transparent';
-        input.style.color = 'var(--text-primary)';
-        input.style.outline = 'none';
-        input.style.padding = '0';
-        input.style.fontFamily = 'inherit';
+        editableSpan.onclick = (e) => {
+            e.stopPropagation(); // Prevent bubbling
 
-        displayContainer.innerHTML = '';
-        displayContainer.appendChild(input);
-        input.focus();
-        input.select();
+            // Avoid creating multiple inputs
+            if (editableSpan.querySelector('input')) return;
 
-        const finish = () => {
-            let val = parseFloat(input.value);
-            if (!isNaN(val) && val >= 0) {
-                onUpdate(val);
-            } else {
-                onUpdate(value);
-            }
+            const currentVal = value;
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.value = currentVal;
+            input.className = 'inline-number-input';
+
+            // Clear text, insert input
+            editableSpan.textContent = '';
+            editableSpan.appendChild(input);
+
+            input.focus();
+            input.select();
+
+            const finish = () => {
+                let val = parseFloat(input.value);
+                if (!isNaN(val) && val >= 0) {
+                    onUpdate(val);
+                } else {
+                    onUpdate(currentVal);
+                }
+            };
+
+            input.onblur = finish;
+            input.onkeydown = (e) => {
+                if (e.key === 'Enter') input.blur();
+            };
+
+            // Stop click propagation on the input to prevent re-triggering span click
+            input.onclick = (e) => e.stopPropagation();
         };
-
-        input.onblur = finish;
-        input.onkeydown = (e) => {
-            if (e.key === 'Enter') input.blur();
-        };
-    };
+    }
 
     return div;
 }
