@@ -385,14 +385,17 @@ h3 {
 }
 
 /* Form inputs for settings */
+/* Form inputs for settings */
 .setting-input {
     width: 100%;
-    padding: 12px;
+    padding: 8px 12px;
+    /* Reduced vertical padding from 12px */
     border: 1px solid #E5E5EA;
     border-radius: 12px;
     font-size: 16px;
     font-family: var(--font-family);
-    margin-top: 4px;
+    margin-top: 2px;
+    /* Reduced from 4px */
 }
 
 /* Hide number input spinners */
