@@ -154,19 +154,18 @@ h3 {
 }
 
 .stepper-btn {
-    width: 28px;
-    /* Slightly smaller buttons */
-    height: 28px;
+    width: 24px;
+    /* Further reduced from 28px */
+    height: 24px;
     border-radius: 50%;
     background-color: white;
     color: var(--accent-color);
-    font-size: 18px;
+    font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     flex-shrink: 0;
-    /* Prevent button shrinking */
 }
 
 /* Layout Utilities */
