@@ -294,13 +294,6 @@ function renderSettingsMode() {
 
     content.innerHTML = `
         <div style="display: flex; flex-direction: column; gap: 16px;">
-            <div class="ios-switch-container">
-                <span class="ios-switch-label">Imperial Units (Lbs)</span>
-                <label class="ios-switch">
-                    <input type="checkbox" id="setting-unit-toggle" ${isLbs ? 'checked' : ''}>
-                    <span class="ios-slider"></span>
-                </label>
-            </div>
             <div>
                 <label class="text-label">Sets</label>
                 <input type="number" id="setting-sets" class="setting-input" value="${state.targetSets}">
@@ -310,7 +303,17 @@ function renderSettingsMode() {
                 <input type="number" id="setting-reps" class="setting-input" value="${state.targetRepsSession}">
             </div>
             <div>
-                <label class="text-label">Weight (${state.unit === 'lbs' ? 'Lbs' : 'Kg'})</label>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <label class="text-label" style="margin-bottom:0;">Weight</label>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 13px; font-weight: 600; color: ${!isLbs ? 'var(--text-primary)' : 'var(--text-secondary)'}">Kg</span>
+                        <label class="ios-switch">
+                            <input type="checkbox" id="setting-unit-toggle" ${isLbs ? 'checked' : ''}>
+                            <span class="ios-slider"></span>
+                        </label>
+                        <span style="font-size: 13px; font-weight: 600; color: ${isLbs ? 'var(--text-primary)' : 'var(--text-secondary)'}">Lbs</span>
+                    </div>
+                </div>
                 <input type="number" id="setting-weight" class="setting-input" value="${state.targetWeightSession}">
             </div>
             <div>
@@ -601,8 +604,9 @@ function saveSettingsAndClose() {
     const reps = Number(document.getElementById('setting-reps').value);
     const weight = Number(document.getElementById('setting-weight').value);
     const rest = Number(document.getElementById('setting-rest').value);
-    const sliderVal = document.getElementById('setting-unit-slider').value;
-    const isLbs = sliderVal == 1;
+
+    // Check toggle state
+    const isLbs = document.getElementById('setting-unit-toggle').checked;
 
     // Check if unit changed
     const newUnit = isLbs ? 'lbs' : 'kg';
