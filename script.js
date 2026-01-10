@@ -163,7 +163,8 @@ function renderActiveEffortMode() {
             if (val >= 0) updateState('currentReps', val);
         },
         1,
-        `<span style="color:var(--text-primary)">${state.currentReps}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetRepsSession}</span>`
+        `<span style="color:var(--text-primary)">${state.currentReps}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetRepsSession}</span>`,
+        () => showInputModal('Reps', state.currentReps, (val) => updateState('currentReps', val))
     );
 
     // Weight Control: Displays "Current / Target"
@@ -173,8 +174,9 @@ function renderActiveEffortMode() {
         (val) => {
             if (val >= 0) updateState('currentWeight', val);
         },
-        1, // Step is now 1kg
-        `<span style="color:var(--text-primary)">${state.currentWeight}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetWeightSession}</span>`
+        1,
+        `<span style="color:var(--text-primary)">${state.currentWeight}</span><span style="color:var(--text-secondary); font-size: 18px;">/${state.targetWeightSession}</span>`,
+        () => showInputModal('Weight', state.currentWeight, (val) => updateState('currentWeight', val))
     );
 
     controlsRow.appendChild(repsControl);
@@ -448,7 +450,40 @@ function showEndSessionModal() {
     };
 }
 
-function createStepperControl(label, value, onUpdate, step = 1, displayValue = null) {
+function showInputModal(title, initialValue, onConfirm) {
+    const overlay = showModalUI(`
+        <div class="modal-card">
+            <div class="modal-title">Edit ${title}</div>
+            <input type="number" class="modal-input" value="${initialValue}" id="edit-val-input" style="text-align:center; font-size: 24px; font-weight: bold;">
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="modal-cancel">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" id="modal-save">Ok</button>
+            </div>
+        </div>
+    `);
+
+    const input = overlay.querySelector('#edit-val-input');
+    input.focus();
+    input.select();
+
+    // Allow 'Enter' key to submit
+    input.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+            overlay.querySelector('#modal-save').click();
+        }
+    };
+
+    overlay.querySelector('#modal-cancel').onclick = closeActiveModal;
+    overlay.querySelector('#modal-save').onclick = () => {
+        const val = Number(input.value);
+        if (val >= 0) {
+            onConfirm(val);
+            closeActiveModal();
+        }
+    };
+}
+
+function createStepperControl(label, value, onUpdate, step = 1, displayValue = null, onLabelClick = null) {
     const div = document.createElement('div');
     div.className = 'control-group';
 
@@ -463,6 +498,13 @@ function createStepperControl(label, value, onUpdate, step = 1, displayValue = n
 
     div.querySelector('.minus').onclick = () => onUpdate(Number(value) - step);
     div.querySelector('.plus').onclick = () => onUpdate(Number(value) + step);
+
+    if (onLabelClick) {
+        const display = div.querySelector('.input-display');
+        display.style.cursor = 'pointer';
+        display.onclick = onLabelClick;
+        display.title = "Click to edit manually";
+    }
 
     return div;
 }
