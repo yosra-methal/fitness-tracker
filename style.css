@@ -1,0 +1,240 @@
+:root {
+    --bg-color: #FFFFFF;
+    --text-primary: #1C1C1E;
+    --text-secondary: #8E8E93;
+    --accent-color: #007AFF; /* Apple Blue */
+    --accent-success: #34C759; /* Apple Green */
+    --bg-secondary: #F2F2F7;
+    --border-radius: 24px;
+    --btn-radius: 999px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: var(--text-primary);
+}
+
+#widget-container {
+    width: 320px;
+    height: 380px; /* Fixed height for consistency */
+    background-color: var(--bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* Typography */
+h1, h2, h3 {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.text-secondary {
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.text-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+/* Buttons */
+.btn {
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-family);
+    font-weight: 600;
+    transition: transform 0.1s ease, opacity 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: var(--btn-radius);
+    height: 50px;
+    width: 100%;
+    font-size: 17px;
+}
+
+.btn-success {
+    background-color: var(--accent-success);
+}
+
+.btn-secondary {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-radius: var(--btn-radius);
+    padding: 12px 20px;
+    font-size: 15px;
+}
+
+.btn-icon {
+    background: none;
+    padding: 8px;
+    border-radius: 50%;
+    color: var(--text-secondary);
+}
+
+.btn-icon:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* Inputs & Controls */
+.control-group {
+    background-color: var(--bg-secondary);
+    border-radius: 16px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.input-display {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 4px 0;
+}
+
+.stepper {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.stepper-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: white;
+    color: var(--accent-color);
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Layout Utilities */
+.view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    animation: fadeIn 0.3s ease;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+    height: 40px;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--spacing-md);
+}
+
+.footer {
+    margin-top: auto;
+}
+
+.row {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+/* Mode A: List */
+.exercise-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    padding-bottom: 4px;
+}
+
+.exercise-item {
+    background-color: var(--bg-secondary);
+    padding: 16px;
+    border-radius: 18px;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text-primary);
+    text-align: left;
+    transition: background-color 0.2s;
+}
+
+.exercise-item:hover {
+    background-color: #E5E5EA;
+}
+
+/* Timer */
+.timer-display {
+    font-size: 64px;
+    font-weight: 700;
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    color: var(--text-primary);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form inputs for settings */
+.setting-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #E5E5EA;
+    border-radius: 12px;
+    font-size: 16px;
+    font-family: var(--font-family);
+    margin-top: 4px;
+}
