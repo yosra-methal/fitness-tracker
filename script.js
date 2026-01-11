@@ -1,9 +1,9 @@
 // Initial State
 let defaultExercises = [
-    { id: 'bench', name: 'Bench Press', defaultSets: 4, defaultReps: 10, defaultWeight: 60 },
-    { id: 'squat', name: 'Squat', defaultSets: 5, defaultReps: 5, defaultWeight: 80 },
-    { id: 'pullup', name: 'Pull-ups', defaultSets: 4, defaultReps: 8, defaultWeight: 0 },
-    { id: 'dl', name: 'Deadlift', defaultSets: 3, defaultReps: 5, defaultWeight: 100 }
+    { id: 'bench', name: 'Bench Press', defaultSets: 4, defaultReps: 10, defaultWeight: 60, enableStopwatch: false },
+    { id: 'squat', name: 'Squat', defaultSets: 5, defaultReps: 5, defaultWeight: 80, enableStopwatch: false },
+    { id: 'pullup', name: 'Pull-ups', defaultSets: 4, defaultReps: 8, defaultWeight: 0, enableStopwatch: false },
+    { id: 'dl', name: 'Deadlift', defaultSets: 3, defaultReps: 5, defaultWeight: 100, enableStopwatch: false }
 ];
 
 // Load from local storage or use default
@@ -118,9 +118,25 @@ function renderSelectionMode() {
         item.className = 'exercise-item';
         item.onclick = () => selectExercise(ex); // Move click to container
 
-        const nameSpan = document.createElement('span');
+        const contentDiv = document.createElement('div');
+        contentDiv.style.flex = '1';
+
+        const nameSpan = document.createElement('div');
         nameSpan.textContent = ex.name;
-        nameSpan.style.flex = '1';
+
+        const detailsSpan = document.createElement('div');
+        detailsSpan.style.fontSize = '12px';
+        detailsSpan.style.color = 'var(--text-secondary)';
+        detailsSpan.style.marginTop = '2px';
+
+        let detailsText = `${ex.defaultSets} sets × ${ex.defaultReps} reps`;
+        if (ex.enableStopwatch) {
+            detailsText += ' • Timer';
+        }
+        detailsSpan.textContent = detailsText;
+
+        contentDiv.appendChild(nameSpan);
+        contentDiv.appendChild(detailsSpan);
 
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'delete-btn';
@@ -130,7 +146,7 @@ function renderSelectionMode() {
             showDeleteConfirmation(index);
         };
 
-        item.appendChild(nameSpan);
+        item.appendChild(contentDiv);
         item.appendChild(deleteBtn);
         list.appendChild(item);
     });
