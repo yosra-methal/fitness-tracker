@@ -61,6 +61,7 @@ const Icons = {
 // Render Functions
 function render() {
     container.innerHTML = '';
+    container.dataset.mode = state.mode;
 
     // Main View
     let content;

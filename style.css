@@ -16,6 +16,10 @@
     --spacing-lg: 24px;
     --shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* New Theme Colors */
+    --peach: #FF9F80;
+    --orange-gradient: linear-gradient(135deg, #fccb90 0%, #d57eeb 100%);
 }
 
 * {
@@ -562,3 +566,50 @@ input:checked+.ios-slider:before {
     min-width: 120px;
     /* Ensure enough consistency */
 }
+
+/* =========================================
+   Orange Theme Overrides (Selection & Active)
+   ========================================= */
+
+#widget-container[data-mode="SELECTION"],
+#widget-container[data-mode="ACTIVE"] {
+    --active-gradient: var(--orange-gradient);
+    --active-color-primary: var(--peach);
+}
+
+/* Titles - Ensure Peach Color */
+#widget-container[data-mode="SELECTION"] h1,
+#widget-container[data-mode="SELECTION"] h2,
+#widget-container[data-mode="SELECTION"] h3,
+#widget-container[data-mode="SELECTION"] .title-text,
+#widget-container[data-mode="ACTIVE"] h1,
+#widget-container[data-mode="ACTIVE"] h2,
+#widget-container[data-mode="ACTIVE"] h3,
+#widget-container[data-mode="ACTIVE"] .title-text {
+    color: var(--peach) !important;
+}
+
+/* Buttons (Selection Mode) - Dark Grey Text */
+#widget-container[data-mode="SELECTION"] .exercise-item {
+    color: var(--text-primary);
+}
+
+/* Buttons (Active Mode) - Dark Grey Text for 'Complete Set' */
+#widget-container[data-mode="ACTIVE"] .btn-primary {
+    color: var(--text-primary);
+}
+
+/* Stepper Buttons (+/-) - Orange Gradient Border */
+#widget-container[data-mode="ACTIVE"] .stepper-btn {
+    background: linear-gradient(#fff, #fff) padding-box,
+        var(--orange-gradient) border-box;
+    border: 2px solid transparent;
+    color: var(--text-primary);
+    /* Dark Grey Icon */
+    box-shadow: none;
+}
+
+/* Timer/Stopwatch Play Button - Inherits --active-gradient for border, but text color? */
+/* .btn-play uses color: var(--active-color-primary). Since we set that to Peach, the icon will be Peach. */
+/* User didn't specify play button color, but usually it matches the theme. Peach seems fine or Orange Gradient. */
+/* If we want it to match 'titles', Peach is correct. */
