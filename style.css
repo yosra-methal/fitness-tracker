@@ -276,12 +276,15 @@ h3,
 }
 
 .exercise-item {
-    background-color: var(--bg-secondary);
+    background: linear-gradient(#fff, #fff) padding-box,
+        var(--active-gradient) border-box;
+    border: 2px solid transparent;
     padding: 16px;
     border-radius: 18px;
     font-weight: 600;
     font-size: 16px;
-    color: var(--text-primary);
+    color: #48484A;
+    /* Dark Grey */
     text-align: left;
     transition: background-color 0.2s;
     display: flex;
@@ -292,7 +295,9 @@ h3,
 }
 
 .exercise-item:hover {
-    background-color: #E5E5EA;
+    background-color: white;
+    /* Keep white, maybe specific hover effect? Or just opacity? */
+    opacity: 0.8;
 }
 
 .delete-btn {
