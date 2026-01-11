@@ -29,7 +29,12 @@ let state = {
     // Timer
     restTimer: 90, // seconds
     timerRemaining: 90,
-    timerInterval: null
+    timerInterval: null,
+
+    // Stopwatch (Chrono)
+    stopwatchTime: 0,
+    stopwatchRunning: false,
+    stopwatchInterval: null
 };
 
 // Check for saved unit preference
@@ -48,7 +53,9 @@ const Icons = {
     Plus: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
     Minus: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
     Star: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`,
-    Trash: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`
+    Trash: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
+    Play: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`,
+    Pause: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`
 };
 
 // Render Functions
@@ -191,6 +198,54 @@ function renderActiveEffortMode() {
     content.appendChild(setDisplay);
     content.appendChild(controlsRow);
 
+    // Stopwatch Section (if enabled)
+    if (state.currentExercise.enableStopwatch) {
+        const chronoRow = document.createElement('div');
+        chronoRow.style.marginTop = '16px';
+        chronoRow.style.display = 'flex';
+        chronoRow.style.alignItems = 'center';
+        chronoRow.style.justifyContent = 'space-between';
+        chronoRow.style.backgroundColor = 'var(--bg-secondary)';
+        chronoRow.style.padding = '12px 16px';
+        chronoRow.style.borderRadius = '16px';
+
+        const chronoLabel = document.createElement('div');
+        chronoLabel.className = 'text-label';
+        chronoLabel.style.marginBottom = '0';
+        chronoLabel.textContent = 'Timer';
+
+        const chronoControls = document.createElement('div');
+        chronoControls.style.display = 'flex';
+        chronoControls.style.alignItems = 'center';
+        chronoControls.style.gap = '12px';
+
+        const timeDisplay = document.createElement('div');
+        timeDisplay.id = 'chrono-display';
+        timeDisplay.style.fontSize = '24px';
+        timeDisplay.style.fontWeight = '600';
+        timeDisplay.style.fontVariantNumeric = 'tabular-nums';
+        timeDisplay.textContent = formatTime(state.stopwatchTime);
+
+        const playBtn = document.createElement('button');
+        playBtn.className = 'btn';
+        playBtn.style.backgroundColor = state.stopwatchRunning ? '#FF3B30' : 'var(--accent-success)'; // Red for stop, Green for play
+        playBtn.style.color = 'white';
+        playBtn.style.width = '32px';
+        playBtn.style.height = '32px';
+        playBtn.style.borderRadius = '50%';
+        playBtn.style.padding = '6px';
+        playBtn.innerHTML = state.stopwatchRunning ? Icons.Pause : Icons.Play;
+        playBtn.onclick = toggleStopwatch;
+
+        chronoControls.appendChild(timeDisplay);
+        chronoControls.appendChild(playBtn);
+
+        chronoRow.appendChild(chronoLabel);
+        chronoRow.appendChild(chronoControls);
+
+        content.appendChild(chronoRow);
+    }
+
     const footer = document.createElement('div');
     footer.className = 'footer';
     const validateBtn = document.createElement('button');
@@ -320,6 +375,16 @@ function renderSettingsMode() {
                 <label class="text-label">Rest (sec)</label>
                 <input type="number" id="setting-rest" class="setting-input" value="${state.restTimer}">
             </div>
+            <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; margin-top: 8px;">
+                    <label class="text-label" style="margin-bottom:0;">Timer</label>
+                    <label class="ios-switch">
+                        <input type="checkbox" id="setting-timer-toggle" ${state.currentExercise && state.currentExercise.enableStopwatch ? 'checked' : ''}>
+                        <span class="ios-slider"></span>
+                    </label>
+                </div>
+                <div class="text-secondary" style="font-size: 13px;">Enable stopwatch for this exercise</div>
+            </div>
         </div>
     `;
 
@@ -402,6 +467,14 @@ function showAddExerciseModal() {
                 </div>
             </div>
 
+             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; background: var(--bg-secondary); padding: 12px; border-radius: 12px;">
+                <label class="text-label" style="margin-bottom:0;">Timer</label>
+                <label class="ios-switch">
+                    <input type="checkbox" id="new-ex-timer">
+                    <span class="ios-slider"></span>
+                </label>
+            </div>
+
             <div class="modal-actions">
                 <button class="modal-btn modal-btn-cancel" id="modal-cancel">Cancel</button>
                 <button class="modal-btn modal-btn-confirm" id="modal-save">Create</button>
@@ -418,6 +491,7 @@ function showAddExerciseModal() {
         const sets = Number(overlay.querySelector('#new-ex-sets').value);
         const reps = Number(overlay.querySelector('#new-ex-reps').value);
         const weight = Number(overlay.querySelector('#new-ex-weight').value);
+        const hasTimer = overlay.querySelector('#new-ex-timer').checked;
 
         if (name && sets > 0 && reps > 0) {
             const newEx = {
@@ -425,7 +499,8 @@ function showAddExerciseModal() {
                 name: name,
                 defaultSets: sets,
                 defaultReps: reps,
-                defaultWeight: weight
+                defaultWeight: weight,
+                enableStopwatch: hasTimer
             };
             defaultExercises.push(newEx);
             saveExercises();
@@ -551,10 +626,15 @@ function selectExercise(ex) {
     state.targetWeightSession = ex.defaultWeight;
     state.mode = 'ACTIVE';
     state.activeSubMode = 'EFFORT';
+    resetStopwatch(); // Reset stopwatch on new exercise
     render();
 }
 
 function validateSet() {
+    // If stopwatch is enabled and running, pause it? Or keep running? 
+    // Usually we pause between sets or reset. Let's pause.
+    if (state.stopwatchRunning) toggleStopwatch();
+
     if (state.currentSet < state.targetSets) {
         startRest();
     } else {
@@ -584,6 +664,7 @@ function finishRest() {
     state.currentSet++;
     state.currentReps = 0; // Reset counter for the new set
     state.activeSubMode = 'EFFORT';
+    resetStopwatch(); // Reset stopwatch for next set
     render();
 }
 
@@ -591,6 +672,27 @@ function adjustTimer(seconds) {
     state.timerRemaining += seconds;
     if (state.timerRemaining < 0) state.timerRemaining = 0;
     render();
+}
+
+function toggleStopwatch() {
+    if (state.stopwatchRunning) {
+        clearInterval(state.stopwatchInterval);
+        state.stopwatchRunning = false;
+    } else {
+        state.stopwatchInterval = setInterval(() => {
+            state.stopwatchTime++;
+            const display = document.getElementById('chrono-display');
+            if (display) display.textContent = formatTime(state.stopwatchTime);
+        }, 1000);
+        state.stopwatchRunning = true;
+    }
+    render(); // Re-render to update icon color
+}
+
+function resetStopwatch() {
+    if (state.stopwatchInterval) clearInterval(state.stopwatchInterval);
+    state.stopwatchRunning = false;
+    state.stopwatchTime = 0;
 }
 
 function openSettings() {
@@ -635,8 +737,12 @@ function saveSettingsAndClose() {
             defaultExercises[exIndex].defaultSets = sets;
             defaultExercises[exIndex].defaultReps = reps;
             defaultExercises[exIndex].defaultWeight = weight;
+            defaultExercises[exIndex].enableStopwatch = hasTimer;
             saveExercises();
             state.currentExercise = defaultExercises[exIndex];
+
+            // If we disabled the stopwatch, ensure it's stopped
+            if (!hasTimer) resetStopwatch();
         }
     }
 
