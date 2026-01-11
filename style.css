@@ -143,19 +143,21 @@ h3 {
 }
 
 .input-display {
-    font-size: 20px;
-    /* Reduced from 24px to fit "25/50kg" */
+    font-size: 18px;
+    /* Reduced from 20px */
     font-weight: 600;
-    /* Reduced from 700 */
     color: var(--text-primary);
     margin: 4px 0;
     white-space: nowrap;
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: center;
 }
 
 .stepper {
     display: flex;
-    gap: 12px;
-    /* Increased from 4px */
+    gap: 4px;
+    /* Significantly reduced from 12px to save space */
     align-items: center;
     width: 100%;
     justify-content: space-between;
