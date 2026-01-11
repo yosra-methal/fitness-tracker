@@ -149,7 +149,7 @@ function renderActiveEffortMode() {
     header.className = 'header';
     header.innerHTML = `
         <button class="btn btn-icon" id="back-btn">${Icons.ChevronLeft}</button>
-        <div class="title-text">${state.currentExercise.name}</div>
+        <h2 class="title-text">${state.currentExercise.name}</h2>
         <button class="btn btn-icon" id="settings-btn">${Icons.Gear}</button>
     `;
 
@@ -264,7 +264,7 @@ function renderActiveRestMode() {
     header.className = 'header';
     header.innerHTML = `
         <div style="width: 40px"></div>
-        <div class="title-text">Rest</div>
+        <h2 class="title-text">Rest</h2>
         <button class="btn btn-icon" id="settings-btn">${Icons.Gear}</button>
     `;
     header.querySelector('#settings-btn').onclick = openSettings;
@@ -327,7 +327,7 @@ function renderSettingsMode() {
     const leftDiv = document.createElement('div');
     const rightDiv = document.createElement('div');
 
-    const title = document.createElement('h3');
+    const title = document.createElement('h2');
     title.textContent = 'Settings';
 
     header.appendChild(leftDiv);
