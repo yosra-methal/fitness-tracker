@@ -2,10 +2,12 @@
     --bg-color: #FFFFFF;
     --text-primary: #1C1C1E;
     --text-secondary: #8E8E93;
-    --accent-color: #007AFF;
+    --accent-color: #6495ED;
     /* Apple Blue */
-    --accent-success: #34C759;
-    /* Apple Green */
+    --accent-success: #6495ED;
+    /* Cornflower Blue */
+    --active-color-primary: #6495ED;
+    --active-gradient: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
     --bg-secondary: #F2F2F7;
     --border-radius: 24px;
     --btn-radius: 999px;
@@ -55,7 +57,7 @@ h1,
 h2,
 h3 {
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--active-color-primary);
 }
 
 .text-secondary {
@@ -95,33 +97,36 @@ h3 {
 }
 
 .btn-primary {
-    background-color: var(--accent-color);
-    color: white;
+    background: linear-gradient(#fff, #fff) padding-box,
+        var(--active-gradient) border-box;
+    border: 2px solid transparent;
+    color: var(--active-color-primary);
     border-radius: var(--btn-radius);
     height: 50px;
     width: 100%;
     font-size: 17px;
 }
 
-.btn-success {
-    background: linear-gradient(#fff, #fff) padding-box,
-        linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%) border-box;
-    border: 2px solid transparent;
-    color: var(--text-primary);
-}
+
 
 .btn-play {
-    width: 32px;
-    height: 32px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
-    padding: 6px;
-    background: linear-gradient(#fff, #fff) padding-box,
-        linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%) border-box;
-    border: 2px solid transparent;
-    color: var(--text-primary);
+    background: #FFFFFF;
+    position: relative;
+    border: 1.5px solid transparent;
+    background-image: linear-gradient(#FFF, #FFF), var(--active-gradient);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    box-shadow: 0 0 20px -4px rgba(0, 0, 0, 0.1);
+    color: var(--active-color-primary);
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 10;
 }
 
 .btn-play.running {
@@ -369,8 +374,10 @@ h3 {
 }
 
 .modal-btn-confirm {
-    background-color: var(--accent-color);
-    color: white;
+    background: linear-gradient(#fff, #fff) padding-box,
+        var(--active-gradient) border-box;
+    border: 2px solid transparent;
+    color: var(--active-color-primary);
 }
 
 .modal-btn-danger {
@@ -438,6 +445,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 input[type=number] {
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 /* Inline Input Styling */
@@ -454,6 +462,7 @@ input[type=number] {
     padding: 0;
     font-family: inherit;
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 .editable-curr-val {
@@ -533,8 +542,7 @@ input[type=number] {
 }
 
 input:checked+.ios-slider {
-    background-color: var(--text-primary);
-    /* Dark grey/Black for active, or use #34C759 for green */
+    background-color: var(--accent-color);
 }
 
 input:checked+.ios-slider:before {
