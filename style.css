@@ -104,7 +104,30 @@ h3 {
 }
 
 .btn-success {
-    background-color: var(--accent-success);
+    background: linear-gradient(#fff, #fff) padding-box,
+        linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%) border-box;
+    border: 2px solid transparent;
+    color: var(--text-primary);
+}
+
+.btn-play {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    padding: 6px;
+    background: linear-gradient(#fff, #fff) padding-box,
+        linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%) border-box;
+    border: 2px solid transparent;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-play.running {
+    background: #FF3B30;
+    color: white;
+    border: none;
 }
 
 .btn-secondary {

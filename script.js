@@ -227,13 +227,8 @@ function renderActiveEffortMode() {
         timeDisplay.textContent = formatTime(state.stopwatchTime);
 
         const playBtn = document.createElement('button');
-        playBtn.className = 'btn';
-        playBtn.style.backgroundColor = state.stopwatchRunning ? '#FF3B30' : 'var(--accent-success)'; // Red for stop, Green for play
-        playBtn.style.color = 'white';
-        playBtn.style.width = '32px';
-        playBtn.style.height = '32px';
-        playBtn.style.borderRadius = '50%';
-        playBtn.style.padding = '6px';
+        playBtn.className = 'btn btn-play';
+        if (state.stopwatchRunning) playBtn.classList.add('running');
         playBtn.innerHTML = state.stopwatchRunning ? Icons.Pause : Icons.Play;
         playBtn.onclick = toggleStopwatch;
 
