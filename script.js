@@ -709,6 +709,7 @@ function saveSettingsAndClose() {
 
     // Check toggle state
     const isLbs = document.getElementById('setting-unit-toggle').checked;
+    const hasTimer = document.getElementById('setting-timer-toggle').checked;
 
     // Check if unit changed
     const newUnit = isLbs ? 'lbs' : 'kg';
