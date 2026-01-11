@@ -280,7 +280,7 @@ h3 {
     border-radius: 18px;
     font-weight: 600;
     font-size: 16px;
-    color: var(--text-primary);
+    color: var(--active-color-primary);
     text-align: left;
     transition: background-color 0.2s;
     display: flex;
@@ -547,4 +547,13 @@ input:checked+.ios-slider {
 
 input:checked+.ios-slider:before {
     transform: translateX(18px);
+}
+
+.settings-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 120px;
+    /* Ensure enough consistency */
 }

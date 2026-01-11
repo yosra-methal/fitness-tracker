@@ -106,9 +106,7 @@ function renderSelectionMode() {
     header.appendChild(title);
     header.appendChild(addBtn);
 
-    const subtitle = document.createElement('div');
-    subtitle.className = 'subtitle-container';
-    subtitle.innerHTML = `Favorites ${Icons.Star}`;
+
 
     const list = document.createElement('div');
     list.className = 'exercise-list';
@@ -136,7 +134,7 @@ function renderSelectionMode() {
     });
 
     view.appendChild(header);
-    view.appendChild(subtitle);
+    // Removed subtitle
     view.appendChild(list);
     return view;
 }
@@ -355,7 +353,7 @@ function renderSettingsMode() {
             <div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                     <label class="text-label" style="margin-bottom:0;">Weight</label>
-                    <div style="display: flex; align-items: center; gap: 8px;">
+                    <div class="settings-toggle-wrapper">
                         <span style="font-size: 13px; font-weight: 600; color: ${!isLbs ? 'var(--text-primary)' : 'var(--text-secondary)'}">Kg</span>
                         <label class="ios-switch">
                             <input type="checkbox" id="setting-unit-toggle" ${isLbs ? 'checked' : ''}>
@@ -373,10 +371,12 @@ function renderSettingsMode() {
             <div>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; margin-top: 8px;">
                     <label class="text-label" style="margin-bottom:0;">Timer</label>
-                    <label class="ios-switch">
-                        <input type="checkbox" id="setting-timer-toggle" ${state.currentExercise && state.currentExercise.enableStopwatch ? 'checked' : ''}>
-                        <span class="ios-slider"></span>
-                    </label>
+                    <div class="settings-toggle-wrapper">
+                        <label class="ios-switch">
+                            <input type="checkbox" id="setting-timer-toggle" ${state.currentExercise && state.currentExercise.enableStopwatch ? 'checked' : ''}>
+                            <span class="ios-slider"></span>
+                        </label>
+                    </div>
                 </div>
                 <div class="text-secondary" style="font-size: 13px;">Enable stopwatch for this exercise</div>
             </div>
