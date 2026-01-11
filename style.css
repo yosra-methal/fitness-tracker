@@ -615,3 +615,9 @@ input:checked+.ios-slider:before {
     opacity: 0.6;
     /* Match delete-btn opacity */
 }
+
+/* Selection Mode - Increase Title Spacing */
+#widget-container[data-mode="SELECTION"] .header {
+    margin-bottom: 24px;
+    /* Increased from 8px to separate title from list */
+}
