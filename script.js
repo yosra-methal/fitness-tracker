@@ -62,6 +62,7 @@ const Icons = {
 function render() {
     container.innerHTML = '';
     container.dataset.mode = state.mode;
+    container.dataset.subMode = state.activeSubMode;
 
     // Main View
     let content;

@@ -568,11 +568,11 @@ input:checked+.ios-slider:before {
 }
 
 /* =========================================
-   Orange Theme Overrides (Selection & Active)
+   Orange Theme Overrides (Selection & Active EFFORT Only)
    ========================================= */
 
 #widget-container[data-mode="SELECTION"],
-#widget-container[data-mode="ACTIVE"] {
+#widget-container[data-mode="ACTIVE"][data-sub-mode="EFFORT"] {
     --active-gradient: var(--orange-gradient);
     --active-color-primary: var(--peach);
 }
@@ -582,10 +582,10 @@ input:checked+.ios-slider:before {
 #widget-container[data-mode="SELECTION"] h2,
 #widget-container[data-mode="SELECTION"] h3,
 #widget-container[data-mode="SELECTION"] .title-text,
-#widget-container[data-mode="ACTIVE"] h1,
-#widget-container[data-mode="ACTIVE"] h2,
-#widget-container[data-mode="ACTIVE"] h3,
-#widget-container[data-mode="ACTIVE"] .title-text {
+#widget-container[data-mode="ACTIVE"][data-sub-mode="EFFORT"] h1,
+#widget-container[data-mode="ACTIVE"][data-sub-mode="EFFORT"] h2,
+#widget-container[data-mode="ACTIVE"][data-sub-mode="EFFORT"] h3,
+#widget-container[data-mode="ACTIVE"][data-sub-mode="EFFORT"] .title-text {
     color: var(--peach) !important;
 }
 
@@ -594,13 +594,13 @@ input:checked+.ios-slider:before {
     color: var(--text-primary);
 }
 
-/* Buttons (Active Mode) - Dark Grey Text for 'Complete Set' */
-#widget-container[data-mode="ACTIVE"] .btn-primary {
+/* Buttons (Active Effort Mode) - Dark Grey Text for 'Complete Set' */
+#widget-container[data-mode="ACTIVE"][data-sub-mode="EFFORT"] .btn-primary {
     color: var(--text-primary);
 }
 
 /* Stepper Buttons (+/-) - Orange Symbols, No Border Gradient */
-#widget-container[data-mode="ACTIVE"] .stepper-btn {
+#widget-container[data-mode="ACTIVE"][data-sub-mode="EFFORT"] .stepper-btn {
     background: white;
     border: none;
     color: var(--peach);
