@@ -118,25 +118,9 @@ function renderSelectionMode() {
         item.className = 'exercise-item';
         item.onclick = () => selectExercise(ex); // Move click to container
 
-        const contentDiv = document.createElement('div');
-        contentDiv.style.flex = '1';
-
-        const nameSpan = document.createElement('div');
+        const nameSpan = document.createElement('span');
         nameSpan.textContent = ex.name;
-
-        const detailsSpan = document.createElement('div');
-        detailsSpan.style.fontSize = '12px';
-        detailsSpan.style.color = 'var(--text-secondary)';
-        detailsSpan.style.marginTop = '2px';
-
-        let detailsText = `${ex.defaultSets} sets × ${ex.defaultReps} reps`;
-        if (ex.enableStopwatch) {
-            detailsText += ' • Timer';
-        }
-        detailsSpan.textContent = detailsText;
-
-        contentDiv.appendChild(nameSpan);
-        contentDiv.appendChild(detailsSpan);
+        nameSpan.style.flex = '1';
 
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'delete-btn';
@@ -146,7 +130,7 @@ function renderSelectionMode() {
             showDeleteConfirmation(index);
         };
 
-        item.appendChild(contentDiv);
+        item.appendChild(nameSpan);
         item.appendChild(deleteBtn);
         list.appendChild(item);
     });
