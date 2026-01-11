@@ -599,17 +599,19 @@ input:checked+.ios-slider:before {
     color: var(--text-primary);
 }
 
-/* Stepper Buttons (+/-) - Orange Gradient Border */
+/* Stepper Buttons (+/-) - Orange Symbols, No Border Gradient */
 #widget-container[data-mode="ACTIVE"] .stepper-btn {
-    background: linear-gradient(#fff, #fff) padding-box,
-        var(--orange-gradient) border-box;
-    border: 2px solid transparent;
-    color: var(--text-primary);
-    /* Dark Grey Icon */
-    box-shadow: none;
+    background: white;
+    border: none;
+    color: var(--peach);
+    /* Apply Orange/Peach color to the symbols */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    /* Restore shadow */
 }
 
-/* Timer/Stopwatch Play Button - Inherits --active-gradient for border, but text color? */
-/* .btn-play uses color: var(--active-color-primary). Since we set that to Peach, the icon will be Peach. */
-/* User didn't specify play button color, but usually it matches the theme. Peach seems fine or Orange Gradient. */
-/* If we want it to match 'titles', Peach is correct. */
+/* Selection Mode - Add Button (+) match Delete Button (-) styling */
+#widget-container[data-mode="SELECTION"] .header .btn-icon {
+    color: var(--text-secondary);
+    opacity: 0.6;
+    /* Match delete-btn opacity */
+}
