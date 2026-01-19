@@ -599,6 +599,14 @@ input:checked+.ios-slider:before {
     --active-color-primary: var(--peach);
 }
 
+/* FORCE BLUE THEME OVERRIDE (For New Exercise Modal) */
+.force-blue-theme {
+    --active-gradient: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%) !important;
+    --active-color-primary: #6495ED !important;
+    --peach: #6495ED !important;
+    /* Override peach variable to blue so switches turn blue */
+}
+
 /* Titles - Ensure Peach Color */
 #widget-container[data-mode="SELECTION"] h1,
 #widget-container[data-mode="SELECTION"] h2,

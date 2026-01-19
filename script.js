@@ -511,7 +511,7 @@ function showAddExerciseModal() {
         </div>
     `);
 
-    // Handle Unit Toggle Logic (Visual update only, logical update on Save)
+    overlay.classList.add('force-blue-theme');
     const unitToggle = overlay.querySelector('#new-ex-unit-toggle');
     unitToggle.onchange = (e) => {
         const checked = e.target.checked;
