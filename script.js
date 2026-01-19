@@ -149,12 +149,13 @@ function renderActiveEffortMode() {
     header.className = 'header';
     header.innerHTML = `
         <button class="btn btn-icon" id="back-btn">${Icons.ChevronLeft}</button>
-        <h2 class="title-text">${state.currentExercise.name}</h2>
+        <h2 class="title-text" style="cursor: pointer; border-bottom: 1px dashed var(--text-secondary); padding-bottom: 2px;">${state.currentExercise.name}</h2>
         <button class="btn btn-icon" id="settings-btn">${Icons.Gear}</button>
     `;
 
     header.querySelector('#back-btn').onclick = goBackToSelection;
     header.querySelector('#settings-btn').onclick = openSettings;
+    header.querySelector('.title-text').onclick = (e) => editExerciseTitle(e.target);
 
     const content = document.createElement('div');
     content.className = 'content';
@@ -770,6 +771,83 @@ function formatTime(seconds) {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
     return `${m}:${s < 10 ? '0' : ''}${s}`;
+}
+
+// Title Editing Logic
+function editExerciseTitle(titleElement) {
+    if (titleElement.querySelector('input')) return; // Already editing
+
+    const currentName = state.currentExercise.name;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = currentName;
+    input.style.fontSize = 'inherit';
+    input.style.fontWeight = 'inherit';
+    input.style.fontFamily = 'inherit';
+    input.style.color = 'inherit';
+    input.style.background = 'transparent';
+    input.style.border = 'none';
+    input.style.borderBottom = '2px solid var(--active-color-primary)';
+    input.style.textAlign = 'center';
+    input.style.width = '100%';
+    input.style.outline = 'none';
+    input.style.padding = '0';
+    input.style.margin = '0';
+
+    titleElement.textContent = '';
+    titleElement.appendChild(input);
+    input.focus();
+    input.select();
+
+    const finish = () => {
+        const newName = input.value.trim();
+        if (newName && newName !== currentName) {
+            showRenameConfirmationModal(currentName, newName);
+        } else {
+            render(); // Revert
+        }
+    };
+
+    input.onblur = finish;
+    input.onkeydown = (e) => {
+        if (e.key === 'Enter') input.blur();
+    };
+    input.onclick = (e) => e.stopPropagation();
+}
+
+function showRenameConfirmationModal(oldName, newName) {
+    const overlay = showModalUI(`
+        <div class="modal-card">
+            <div class="modal-title">Rename Exercise?</div>
+            <div class="modal-body">
+                Change "<strong>${oldName}</strong>" to "<strong>${newName}</strong>"?
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="modal-cancel">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" id="modal-confirm">Confirm</button>
+            </div>
+        </div>
+    `);
+
+    overlay.querySelector('#modal-cancel').onclick = () => {
+        closeActiveModal();
+        render(); // Revert
+    };
+
+    overlay.querySelector('#modal-confirm').onclick = () => {
+        // Update State
+        state.currentExercise.name = newName;
+
+        // Update main list
+        const exIndex = defaultExercises.findIndex(e => e.id === state.currentExercise.id);
+        if (exIndex !== -1) {
+            defaultExercises[exIndex].name = newName;
+            saveExercises();
+        }
+
+        closeActiveModal();
+        render();
+    };
 }
 
 // Init
