@@ -446,33 +446,62 @@ function showDeleteConfirmation(index) {
 }
 
 function showAddExerciseModal() {
+    const isLbs = state.unit === 'lbs';
+
     const overlay = showModalUI(`
         <div class="modal-card">
             <div class="modal-title">New Exercise</div>
             
-            <input type="text" class="modal-input" placeholder="Exercise Name" id="new-ex-name" style="margin-bottom: 12px;">
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px;">
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px; text-align: left; margin-bottom: 24px;">
+                
+                <!-- Name -->
+                <div>
+                    <label class="text-label">Name</label>
+                    <input type="text" id="new-ex-name" class="setting-input" placeholder="Exercise Name">
+                </div>
+
+                <!-- Sets -->
                 <div>
                     <label class="text-label">Sets</label>
-                    <input type="number" class="modal-input" value="4" id="new-ex-sets" style="margin-bottom:0; text-align:center;">
+                    <input type="number" id="new-ex-sets" class="setting-input" value="4">
                 </div>
+
+                <!-- Reps -->
                 <div>
                     <label class="text-label">Reps</label>
-                    <input type="number" class="modal-input" value="10" id="new-ex-reps" style="margin-bottom:0; text-align:center;">
+                    <input type="number" id="new-ex-reps" class="setting-input" value="10">
                 </div>
-                <div>
-                    <label class="text-label">Kg</label>
-                    <input type="number" class="modal-input" value="10" id="new-ex-weight" style="margin-bottom:0; text-align:center;">
-                </div>
-            </div>
 
-             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; background: var(--bg-secondary); padding: 12px; border-radius: 12px;">
-                <label class="text-label" style="margin-bottom:0;">Timer</label>
-                <label class="ios-switch">
-                    <input type="checkbox" id="new-ex-timer">
-                    <span class="ios-slider"></span>
-                </label>
+                <!-- Weight -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <label class="text-label" style="margin-bottom:0;">Weight</label>
+                        <div class="settings-toggle-wrapper">
+                            <span style="font-size: 13px; font-weight: 600; color: ${!isLbs ? 'var(--text-primary)' : 'var(--text-secondary)'}">Kg</span>
+                            <label class="ios-switch">
+                                <input type="checkbox" id="new-ex-unit-toggle" ${isLbs ? 'checked' : ''}>
+                                <span class="ios-slider"></span>
+                            </label>
+                            <span style="font-size: 13px; font-weight: 600; color: ${isLbs ? 'var(--text-primary)' : 'var(--text-secondary)'}">Lbs</span>
+                        </div>
+                    </div>
+                    <input type="number" id="new-ex-weight" class="setting-input" value="10">
+                </div>
+
+                <!-- Timer -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; margin-top: 8px;">
+                        <label class="text-label" style="margin-bottom:0;">Timer</label>
+                        <div class="settings-toggle-wrapper">
+                            <label class="ios-switch">
+                                <input type="checkbox" id="new-ex-timer">
+                                <span class="ios-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="text-secondary" style="font-size: 13px;">Enable stopwatch for this exercise</div>
+                </div>
+
             </div>
 
             <div class="modal-actions">
@@ -482,33 +511,54 @@ function showAddExerciseModal() {
         </div>
     `);
 
-    const inputName = overlay.querySelector('#new-ex-name');
-    inputName.focus();
+    // Handle Unit Toggle Logic (Visual update only, logical update on Save)
+    const unitToggle = overlay.querySelector('#new-ex-unit-toggle');
+    unitToggle.onchange = (e) => {
+        const checked = e.target.checked;
+        const labels = unitToggle.closest('.settings-toggle-wrapper').querySelectorAll('span:not(.ios-slider)');
+        labels[0].style.color = !checked ? 'var(--text-primary)' : 'var(--text-secondary)';
+        labels[1].style.color = checked ? 'var(--text-primary)' : 'var(--text-secondary)';
+    };
 
     overlay.querySelector('#modal-cancel').onclick = closeActiveModal;
-    overlay.querySelector('#modal-save').onclick = () => {
-        const name = inputName.value.trim();
-        const sets = Number(overlay.querySelector('#new-ex-sets').value);
-        const reps = Number(overlay.querySelector('#new-ex-reps').value);
-        const weight = Number(overlay.querySelector('#new-ex-weight').value);
-        const hasTimer = overlay.querySelector('#new-ex-timer').checked;
 
-        if (name && sets > 0 && reps > 0) {
-            const newEx = {
-                id: 'ex_' + Date.now(),
-                name: name,
-                defaultSets: sets,
-                defaultReps: reps,
-                defaultWeight: weight,
-                enableStopwatch: hasTimer
-            };
-            defaultExercises.push(newEx);
-            saveExercises();
-            closeActiveModal();
-            render();
-        } else {
-            inputName.style.borderColor = "#FF3B30";
+    overlay.querySelector('#modal-save').onclick = () => {
+        const name = document.getElementById('new-ex-name').value.trim();
+        const sets = Number(document.getElementById('new-ex-sets').value);
+        const reps = Number(document.getElementById('new-ex-reps').value);
+        const weight = Number(document.getElementById('new-ex-weight').value);
+        const hasTimer = document.getElementById('new-ex-timer').checked;
+        const isLbsChecked = document.getElementById('new-ex-unit-toggle').checked;
+
+        if (!name) {
+            alert('Please enter a name');
+            return;
         }
+
+        // Logic to switch unit if changed
+        const newUnit = isLbsChecked ? 'lbs' : 'kg';
+        if (newUnit !== state.unit) {
+            const ratio = newUnit === 'lbs' ? 2.20462 : 0.453592;
+            defaultExercises.forEach(ex => {
+                ex.defaultWeight = Math.round(ex.defaultWeight * ratio);
+            });
+            state.unit = newUnit;
+            localStorage.setItem('fitness_unit', newUnit);
+        }
+
+        const newExercise = {
+            id: 'ex-' + Date.now(),
+            name: name,
+            defaultSets: sets,
+            defaultReps: reps,
+            defaultWeight: weight,
+            enableStopwatch: hasTimer
+        };
+
+        defaultExercises.push(newExercise);
+        saveExercises();
+        closeActiveModal();
+        render(); // Will re-render listing
     };
 }
 
