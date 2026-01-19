@@ -43,8 +43,9 @@ body {
 #widget-container {
     width: 350px;
     /* Increased from 320px */
-    height: 460px;
-    /* Increased height to fit 4 items */
+    /* Increased from 320px */
+    height: 540px;
+    /* Increased height to fit 5 items and settings */
     background-color: var(--bg-color);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -568,9 +569,18 @@ input:checked+.ios-slider:before {
 }
 
 /* =========================================
-   Orange Theme Overrides (Selection & Active EFFORT Only)
+   Orange Theme Overrides
    ========================================= */
 
+/* 1. SELECTION MODE: Container has Orange Gradient Border */
+#widget-container[data-mode="SELECTION"] {
+    background: linear-gradient(#fff, #fff) padding-box,
+        var(--orange-gradient) border-box;
+    border: 2px solid transparent;
+    /* Ensure border-radius clips correctly if needed, though border-box handles it usually */
+}
+
+/* 2. SHARED ORANGE THEME (Selection & Active EFFORT) */
 #widget-container[data-mode="SELECTION"],
 #widget-container[data-mode="ACTIVE"][data-sub-mode="EFFORT"] {
     --active-gradient: var(--orange-gradient);
@@ -589,24 +599,23 @@ input:checked+.ios-slider:before {
     color: var(--peach) !important;
 }
 
-/* Buttons (Selection Mode) - Dark Grey Text */
+/* 3. SELECTION MODE BUTTONS */
+/* Default: Neutral background, no gradient border on the button itself */
 #widget-container[data-mode="SELECTION"] .exercise-item {
+    background: var(--bg-secondary);
+    border: 2px solid transparent;
+    /* or none, but keeping sizing consistent */
     color: var(--text-primary);
+    box-shadow: none;
+    /* or small shadow if preferred? Use default styling but override bg */
 }
 
-/* Buttons (Active Effort Mode) - Dark Grey Text for 'Complete Set' */
-#widget-container[data-mode="ACTIVE"][data-sub-mode="EFFORT"] .btn-primary {
-    color: var(--text-primary);
-}
-
-/* Stepper Buttons (+/-) - Orange Symbols, No Border Gradient */
-#widget-container[data-mode="ACTIVE"][data-sub-mode="EFFORT"] .stepper-btn {
-    background: white;
-    border: none;
-    color: var(--peach);
-    /* Apply Orange/Peach color to the symbols */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    /* Restore shadow */
+/* Active State: Orange Gradient Border when clicked */
+#widget-container[data-mode="SELECTION"] .exercise-item:active {
+    background: linear-gradient(#fff, #fff) padding-box,
+        var(--orange-gradient) border-box;
+    border: 2px solid transparent;
+    transform: scale(0.98);
 }
 
 /* Selection Mode - Add Button (+) match Delete Button (-) styling */
@@ -619,5 +628,19 @@ input:checked+.ios-slider:before {
 /* Selection Mode - Increase Title Spacing */
 #widget-container[data-mode="SELECTION"] .header {
     margin-bottom: 24px;
-    /* Increased from 8px to separate title from list */
+}
+
+/* 4. ACTIVE EFFECT MODE BUTTONS */
+/* "Complete Set" Button keeps Orange styling (handled by generic overrides above) */
+#widget-container[data-mode="ACTIVE"][data-sub-mode="EFFORT"] .btn-primary {
+    color: var(--text-primary);
+}
+
+/* Stepper Buttons (+/-) - GREY in active mode */
+#widget-container[data-mode="ACTIVE"][data-sub-mode="EFFORT"] .stepper-btn {
+    background: white;
+    border: none;
+    color: var(--text-secondary);
+    /* Grey color requested */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
