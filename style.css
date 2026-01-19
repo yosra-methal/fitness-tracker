@@ -552,7 +552,7 @@ input[type=number] {
 }
 
 input:checked+.ios-slider {
-    background-color: var(--accent-color);
+    background-color: var(--peach);
 }
 
 input:checked+.ios-slider:before {
