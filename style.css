@@ -138,9 +138,7 @@ h3,
 }
 
 .btn-play.running {
-    background: #FF3B30;
-    color: white;
-    border: none;
+    /* Same style as play button, no red override */
 }
 
 .btn-secondary {
