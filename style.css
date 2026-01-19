@@ -599,6 +599,11 @@ input:checked+.ios-slider:before {
     --active-color-primary: var(--peach);
 }
 
+/* Ensure Settings Mode resets switch color to blue */
+#widget-container[data-mode="SETTINGS"] {
+    --peach: #6495ED;
+}
+
 /* FORCE BLUE THEME OVERRIDE (For New Exercise Modal) */
 .force-blue-theme {
     --active-gradient: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%) !important;
