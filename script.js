@@ -55,7 +55,8 @@ const Icons = {
     Star: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`,
     Trash: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
     Play: `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`,
-    Pause: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`
+    Pause: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`,
+    Edit: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`
 };
 
 // Render Functions
@@ -149,13 +150,16 @@ function renderActiveEffortMode() {
     header.className = 'header';
     header.innerHTML = `
         <button class="btn btn-icon" id="back-btn">${Icons.ChevronLeft}</button>
-        <h2 class="title-text" style="cursor: pointer; border-bottom: 1px dashed var(--text-secondary); padding-bottom: 2px;">${state.currentExercise.name}</h2>
+        <div class="title-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;">
+            <h2 class="title-text" style="flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis;">${state.currentExercise.name}</h2>
+            ${Icons.Edit}
+        </div>
         <button class="btn btn-icon" id="settings-btn">${Icons.Gear}</button>
     `;
 
     header.querySelector('#back-btn').onclick = goBackToSelection;
     header.querySelector('#settings-btn').onclick = openSettings;
-    header.querySelector('.title-text').onclick = (e) => editExerciseTitle(e.target);
+    header.querySelector('.title-wrapper').onclick = () => editExerciseTitle(header.querySelector('.title-text'));
 
     const content = document.createElement('div');
     content.className = 'content';
