@@ -150,16 +150,13 @@ function renderActiveEffortMode() {
     header.className = 'header';
     header.innerHTML = `
         <button class="btn btn-icon" id="back-btn">${Icons.ChevronLeft}</button>
-        <div class="title-wrapper" style="display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;">
-            <h2 class="title-text" style="flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis;">${state.currentExercise.name}</h2>
-            ${Icons.Edit}
-        </div>
+        <h2 class="title-text" style="cursor: pointer;">${state.currentExercise.name}</h2>
         <button class="btn btn-icon" id="settings-btn">${Icons.Gear}</button>
     `;
 
     header.querySelector('#back-btn').onclick = goBackToSelection;
     header.querySelector('#settings-btn').onclick = openSettings;
-    header.querySelector('.title-wrapper').onclick = () => editExerciseTitle(header.querySelector('.title-text'));
+    header.querySelector('.title-text').onclick = (e) => editExerciseTitle(e.target);
 
     const content = document.createElement('div');
     content.className = 'content';
