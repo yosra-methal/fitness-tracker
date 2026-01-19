@@ -584,11 +584,12 @@ input:checked+.ios-slider:before {
    ========================================= */
 
 /* 1. SELECTION MODE: Container has Orange Gradient Border */
-/* 1. SELECTION MODE: Content Card (.view) has Orange Gradient Border */
-#widget-container[data-mode="SELECTION"] .view {
+/* 1. SELECTION MODE: Container has Orange Gradient Border */
+#widget-container[data-mode="SELECTION"] {
     background: linear-gradient(#fff, #fff) padding-box,
         var(--orange-gradient) border-box;
     border: 2px solid transparent;
+    /* Ensure border exists to receive gradient */
 }
 
 /* 2. SHARED ORANGE THEME (Selection & Active EFFORT) */
