@@ -47,6 +47,8 @@ body {
     height: 540px;
     /* Increased height to fit 5 items and settings */
     background-color: var(--bg-color);
+    border: 2px solid transparent;
+    /* Constant border to prevent layout shift */
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     padding: var(--spacing-lg);
@@ -576,7 +578,6 @@ input:checked+.ios-slider:before {
 #widget-container[data-mode="SELECTION"] {
     background: linear-gradient(#fff, #fff) padding-box,
         var(--orange-gradient) border-box;
-    border: 2px solid transparent;
     /* Ensure border-radius clips correctly if needed, though border-box handles it usually */
 }
 
