@@ -166,7 +166,7 @@ function renderActiveEffortMode() {
     setDisplay.style.marginBottom = '30px'; // Push vertically higher by increasing gap below
     setDisplay.innerHTML = `
         <div class="text-secondary" style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Current Set</div>
-        <div style="font-size: 42px; font-weight: 800; color: var(--active-color-primary); margin-top: 4px;">${state.currentSet} <span style="color: var(--text-secondary); font-size: 24px;">/ ${state.targetSets}</span></div>
+        <div style="font-size: 42px; font-weight: 800; color: var(--text-primary); margin-top: 4px;">${state.currentSet} <span style="color: var(--text-secondary); font-size: 24px;">/ ${state.targetSets}</span></div>
     `;
 
     const controlsRow = document.createElement('div');
