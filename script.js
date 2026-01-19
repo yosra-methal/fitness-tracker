@@ -902,5 +902,31 @@ function showRenameConfirmationModal(oldName, newName) {
     };
 }
 
+// Zoom / Scale Logic
+function resizeWidget() {
+    const container = document.getElementById('widget-container');
+    const targetWidth = 350;
+    const targetHeight = 540;
+
+    const availableWidth = window.innerWidth;
+    const availableHeight = window.innerHeight;
+
+    const scaleX = availableWidth / targetWidth;
+    const scaleY = availableHeight / targetHeight;
+
+    // Use the smaller scale factor to ensure it fits entirely
+    const scale = Math.min(scaleX, scaleY);
+
+    // You can cap the scale if you don't want it too huge, e.g. Math.min(scale, 1.5)
+    // But user asked for bigger/smaller, so unlimited (or bounded by window) is fine.
+
+    container.style.transform = `translate(-50%, -50%) scale(${scale})`;
+}
+
+// Listen for resize
+window.addEventListener('resize', resizeWidget);
+// Initial call
+resizeWidget();
+
 // Init
 render();

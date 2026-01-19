@@ -38,30 +38,34 @@ body {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    /* Scroll handled by container */
+    /* Hide overflow - scaling will handle fit */
     color: var(--text-primary);
+    position: relative;
 }
 
 #widget-container {
-    width: 100%;
-    height: 100%;
+    width: 350px;
+    height: 540px;
     background-color: var(--bg-color);
-    /* Remove Card styling from container, apply to view or keep plain */
-    border-radius: 0;
-    box-shadow: none;
-    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border: 2px solid transparent;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
 
     display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: auto;
-    /* Scrollbars appear here if content is cropped */
-    padding: 0;
-    /* Constraints moved to view */
-
     flex-direction: column;
-    /* Keep column for modals etc if needed, but view is the main child */
+    padding: var(--spacing-lg);
+    overflow: hidden;
+    transition: none;
+    /* Disable transition for generic properties during resize */
 }
+
+
 
 /* Typography */
 h1,
@@ -220,15 +224,8 @@ h3,
 .view {
     display: flex;
     flex-direction: column;
-    /* Fixed Dimensions for Content */
-    width: 350px;
-    height: 540px;
-    flex-shrink: 0;
-
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius);
-    /* If we want the card look on content */
-
+    height: 100%;
+    width: 100%;
     animation: fadeIn 0.3s ease;
 
     position: relative;
