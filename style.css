@@ -33,37 +33,34 @@
 body {
     font-family: var(--font-family);
     background-color: transparent;
-    display: flex;
-    min-height: 100vh;
-    width: 100%;
+    width: 100vw;
+    height: 100vh;
     margin: 0;
     padding: 0;
-    overflow: auto;
-    /* Enable scrollbars if cropped */
+    overflow: hidden;
+    /* Scroll handled by container */
     color: var(--text-primary);
 }
 
 #widget-container {
-    flex-shrink: 0;
-    /* Prevent resizing/squashing */
-    margin: auto;
-    /* Centers in flex container safely */
-    width: 350px;
-    /* Increased from 320px */
-    /* Increased from 320px */
-    height: 540px;
-    /* Increased height to fit 5 items and settings */
+    width: 100%;
+    height: 100%;
     background-color: var(--bg-color);
-    border: 2px solid transparent;
-    /* Constant border to prevent layout shift */
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    padding: var(--spacing-lg);
+    /* Remove Card styling from container, apply to view or keep plain */
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+
     display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    /* Scrollbars appear here if content is cropped */
+    padding: 0;
+    /* Constraints moved to view */
+
     flex-direction: column;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
+    /* Keep column for modals etc if needed, but view is the main child */
 }
 
 /* Typography */
@@ -223,9 +220,19 @@ h3,
 .view {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    width: 100%;
+    /* Fixed Dimensions for Content */
+    width: 350px;
+    height: 540px;
+    flex-shrink: 0;
+
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    /* If we want the card look on content */
+
     animation: fadeIn 0.3s ease;
+
+    position: relative;
+    /* For modals centered in view */
 }
 
 .header {
@@ -580,10 +587,11 @@ input:checked+.ios-slider:before {
    ========================================= */
 
 /* 1. SELECTION MODE: Container has Orange Gradient Border */
-#widget-container[data-mode="SELECTION"] {
+/* 1. SELECTION MODE: Content Card (.view) has Orange Gradient Border */
+#widget-container[data-mode="SELECTION"] .view {
     background: linear-gradient(#fff, #fff) padding-box,
         var(--orange-gradient) border-box;
-    /* Ensure border-radius clips correctly if needed, though border-box handles it usually */
+    border: 2px solid transparent;
 }
 
 /* 2. SHARED ORANGE THEME (Selection & Active EFFORT) */
