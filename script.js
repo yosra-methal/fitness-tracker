@@ -566,7 +566,10 @@ function showCompletionModal() {
     const overlay = showModalUI(`
         <div class="modal-card">
             <div class="modal-title">Good Job! 🎉</div>
-            <div class="modal-body">You have completed all sets.</div>
+            <div class="modal-body">
+                You have completed all sets.<br>
+                You did <b>${state.currentReps} reps</b> at <b>${state.currentWeight} ${state.unit}</b>
+            </div>
             <div class="modal-actions">
                 <button class="modal-btn modal-btn-confirm" id="modal-ok">Finish</button>
             </div>
