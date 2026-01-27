@@ -563,12 +563,21 @@ function showAddExerciseModal() {
 }
 
 function showCompletionModal() {
+    let summaryHtml = '<div style="display:flex; flex-direction:column; align-items:flex-start; gap:4px; margin-top:12px; max-height: 200px; overflow-y:auto; width:100%;">';
+
+    state.sessionHistory.forEach((item, index) => {
+        summaryHtml += `<div class="text-secondary" style="font-size:14px;">
+            Set ${item.set}: <b>${item.reps} reps</b> at <b>${item.weight} ${state.unit}</b>
+        </div>`;
+    });
+    summaryHtml += '</div>';
+
     const overlay = showModalUI(`
         <div class="modal-card">
             <div class="modal-title">Good Job! 🎉</div>
             <div class="modal-body">
                 You have completed all sets.<br>
-                You did <b>${state.currentReps} reps</b> at <b>${state.currentWeight} ${state.unit}</b>
+                ${summaryHtml}
             </div>
             <div class="modal-actions">
                 <button class="modal-btn modal-btn-confirm" id="modal-ok">Finish</button>
@@ -669,6 +678,7 @@ function createStepperControl(label, value, onUpdate, step = 1, displayValue = n
 }
 
 // Logic
+// Logic
 function selectExercise(ex) {
     state.currentExercise = ex;
     state.currentSet = 1;
@@ -679,14 +689,21 @@ function selectExercise(ex) {
     state.targetWeightSession = ex.defaultWeight;
     state.mode = 'ACTIVE';
     state.activeSubMode = 'EFFORT';
+    state.sessionHistory = []; // Initialize history tracking
     resetStopwatch(); // Reset stopwatch on new exercise
     render();
 }
 
 function validateSet() {
-    // If stopwatch is enabled and running, pause it? Or keep running? 
-    // Usually we pause between sets or reset. Let's pause.
+    // If stopwatch is enabled and running, pause it
     if (state.stopwatchRunning) toggleStopwatch();
+
+    // Record correct history for this set
+    state.sessionHistory.push({
+        set: state.currentSet,
+        reps: state.currentReps,
+        weight: state.currentWeight
+    });
 
     if (state.currentSet < state.targetSets) {
         startRest();
